@@ -2,7 +2,7 @@
 # GLOBALS                                                                       #
 #################################################################################
 
-PROJECT_NAME = deduplication
+PROJECT_NAME = Deduplication-experiments
 PYTHON_VERSION = 3.12
 
 # Use the project's virtual environment when it exists, otherwise the Python on PATH.
