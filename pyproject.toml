@@ -1,0 +1,82 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "dedup_bench"
+version = "0.0.1"
+description = "A benchmark of deduplication and entity-resolution methods on Kaggle and academic datasets."
+authors = [
+  { name = "Christoforos Antoniadis" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License"
+]
+# Direct dependencies are pinned to the versions the benchmark is run with.
+dependencies = [
+    "igraph==1.0.0",
+    "jellyfish==1.2.1",
+    "kaggle==2.2.4",
+    "loguru==0.7.3",
+    "matplotlib==3.11.2",
+    "numpy==2.5.3",
+    "pandas==2.3.3",
+    "psutil==7.2.2",
+    "pyarrow==26.0.0",
+    "python-dotenv==1.2.4",
+    "rapidfuzz==3.14.6",
+    "recordlinkage==0.16",
+    "scikit-learn==1.9.1",
+    "scipy==1.18.1",
+    "sparse-dot-topn==1.2.0",
+    "splink==5.0.0",
+    "string-grouper==0.8.0",
+    "tqdm==4.70.1",
+    "typer==0.27.3",
+]
+requires-python = "~=3.12.0"
+
+[project.optional-dependencies]
+# Development tools: install with  pip install -e ".[dev]"
+dev = [
+    "ipython==9.17.1",
+    "jupyterlab==4.6.4",
+    "notebook==7.6.3",
+    "pytest==9.1.1",
+    "ruff==0.17.0",
+]
+# Two of dedupe's dependencies (affinegap, dedupe-Levenshtein-search) ship no
+# Python 3.12 wheels for Windows, so on Windows this extra needs Microsoft C++
+# Build Tools to compile them.
+dedupe = [
+    "dedupe==3.0.3",
+]
+# Sentence embeddings and nearest-neighbour search for embedding-based blocking
+# and clustering.
+embeddings = [
+    "faiss-cpu==1.15.1",
+    "model2vec==0.9.0",
+    "sentence-transformers==6.1.0",
+]
+# pyJedAI's py-stringcompare dependency also compiles from source on Windows.
+pyjedai = [
+    "pyjedai==0.3.6",
+]
+
+[tool.ruff]
+line-length = 99
+src = ["dedup_bench"]
+include = ["pyproject.toml", "dedup_bench/**/*.py", "tests/**/*.py"]
+
+[tool.ruff.lint]
+extend-select = ["I"]  # Add import sorting
+
+[tool.ruff.lint.isort]
+known-first-party = ["dedup_bench"]
+force-sort-within-sections = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
