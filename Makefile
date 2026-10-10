@@ -57,10 +57,11 @@ create_environment:
 # PROJECT RULES                                                                 #
 #################################################################################
 
-## Make dataset
+## Download the datasets and prepare them in the common format
 .PHONY: data
 data:
-	$(PYTHON_INTERPRETER) -m dedup_bench.dataset
+	$(PYTHON_INTERPRETER) -m dedup_bench.dataset download
+	$(PYTHON_INTERPRETER) -m dedup_bench.dataset prepare
 
 #################################################################################
 # Self Documenting Commands                                                     #

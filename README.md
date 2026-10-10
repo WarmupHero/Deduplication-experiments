@@ -19,6 +19,22 @@ make requirements         # pip install -e ".[dev,dedupe,embeddings,pyjedai]"
 make test
 ```
 
+## Data
+
+`make data` downloads six datasets into `data/raw/` (with SHA-256 checksums) and prepares
+each one in `data/processed/<dataset>/`: `records.parquet` (shuffled records with neutral
+IDs) and `truth.parquet` (the true entity of every record). The Kaggle downloads need a
+Kaggle API token in the `KAGGLE_API_TOKEN` environment variable.
+
+| Dataset | Domain | Source | Records | Entities | Card |
+|---|---|---|---:|---:|---|
+| Febrl 3 | synthetic people | `recordlinkage` package | 5,000 | 2,000 | [febrl3](references/febrl3.md) |
+| Restaurants | restaurant listings | Kaggle | 864 | 752 | [restaurants](references/restaurants.md) |
+| PriceRunner | product offers | Kaggle | 35,311 | 13,233 | [pricerunner](references/pricerunner.md) |
+| Skroutz | product offers | Kaggle | 238,170 | 63,995 | [skroutz](references/skroutz.md) |
+| Abt-Buy | product offers | Leipzig | 2,173 | 1,076 | [abt_buy](references/abt_buy.md) |
+| Cora | citations | HPI | 1,879 | 182 | [cora](references/cora.md) |
+
 ## Project Organization
 
 ```
