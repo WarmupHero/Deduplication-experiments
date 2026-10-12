@@ -87,15 +87,15 @@
     }
   },
   "active_learning": {
-    "description": "dedupe, labelled by a simulated oracle that answers from the dev entities' ground truth until label_budget labels are used.",
-    "dedupe": {
+    "description": "A random forest on the candidate pairs' similarity features that asks a simulated oracle (answering from the dev entities' ground truth) about the pairs it is least sure of. It starts from initial_labels random pairs, then queries query_batch_size pairs per round, those whose match probability is closest to 0.5, until label_budget labels are used.",
+    "random_forest": {
       "label_budget": [10, 25, 50, 100, 200, 500],
-      "sample_size": [1500],
-      "blocked_proportion": [0.9],
-      "recall": [1.0],
-      "index_predicates": [true],
-      "num_cores": [1],
-      "partition_threshold": [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+      "initial_labels": [10],
+      "query_batch_size": [1],
+      "n_estimators": [100],
+      "max_depth": [null, 10],
+      "class_weight": ["balanced"],
+      "threshold": [0.3, 0.4, 0.5, 0.6, 0.7]
     }
   },
   "supervised": {

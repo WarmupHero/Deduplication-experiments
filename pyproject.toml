@@ -22,7 +22,10 @@ dependencies = [
     "kaggle==2.2.4",
     "loguru==0.7.3",
     "matplotlib==3.11.2",
-    "numpy==2.5.3",
+    # Not 2.4 or later: scikit-learn 1.9.1's HDBSCAN fails with
+    # cluster_selection_epsilon > 0 once NumPy stops converting 1-element
+    # arrays to scalars.
+    "numpy==2.3.5",
     "pandas==2.3.3",
     "psutil==7.2.2",
     "pyarrow==26.0.0",
@@ -48,12 +51,6 @@ dev = [
     "pytest==9.1.1",
     "ruff==0.17.0",
 ]
-# Two of dedupe's dependencies (affinegap, dedupe-Levenshtein-search) ship no
-# Python 3.12 wheels for Windows, so on Windows this extra needs Microsoft C++
-# Build Tools to compile them.
-dedupe = [
-    "dedupe==3.0.3",
-]
 # Sentence embeddings and nearest-neighbour search for embedding-based blocking
 # and clustering.
 embeddings = [
@@ -61,7 +58,8 @@ embeddings = [
     "model2vec==0.9.0",
     "sentence-transformers==6.1.0",
 ]
-# pyJedAI's py-stringcompare dependency also compiles from source on Windows.
+# pyJedAI's py-stringcompare dependency ships no Python 3.12 wheel for Windows,
+# so on Windows this extra needs Microsoft C++ Build Tools to compile it.
 pyjedai = [
     "pyjedai==0.3.6",
 ]

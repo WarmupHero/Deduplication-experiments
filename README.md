@@ -8,15 +8,17 @@ A benchmark of deduplication and entity-resolution methods on Kaggle and academi
 
 ## Setup
 
-Requires Python 3.12. On Windows, the `dedupe` and `pyjedai` extras compile C/C++ code
-(`affinegap`, `dedupe-Levenshtein-search`, `py-stringcompare`), so install
+Requires Python 3.12. On Windows, the `pyjedai` extra compiles C++ code (`py-stringcompare`),
+so install
 [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) first;
 the MSVC x64/x86 build tools and a Windows 11 SDK are enough.
 
 ```bash
 make create_environment   # python -m venv .venv
-make requirements         # pip install -e ".[dev,dedupe,embeddings,pyjedai]"
+make requirements         # pip install -e ".[dev,embeddings,pyjedai]"
 make test
+make data                 # download and prepare the datasets (see below)
+make smoke                # run every library once on Febrl 3 and the restaurants
 ```
 
 ## Data

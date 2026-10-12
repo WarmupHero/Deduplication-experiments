@@ -15,6 +15,10 @@ VENV_PYTHON = .venv/bin/python
 endif
 PYTHON_INTERPRETER = $(if $(wildcard $(VENV_PYTHON)),"$(VENV_PYTHON)",python)
 
+# Python randomises string hashing per process, which changes the iteration
+# order of sets of strings; a fixed hash seed keeps runs repeatable across processes.
+export PYTHONHASHSEED = 0
+
 #################################################################################
 # COMMANDS                                                                      #
 #################################################################################
@@ -23,7 +27,7 @@ PYTHON_INTERPRETER = $(if $(wildcard $(VENV_PYTHON)),"$(VENV_PYTHON)",python)
 .PHONY: requirements
 requirements:
 	$(PYTHON_INTERPRETER) -m pip install -U pip
-	$(PYTHON_INTERPRETER) -m pip install -e ".[dev,dedupe,embeddings,pyjedai]"
+	$(PYTHON_INTERPRETER) -m pip install -e ".[dev,embeddings,pyjedai]"
 
 ## Delete Python caches
 .PHONY: clean
@@ -62,6 +66,11 @@ create_environment:
 data:
 	$(PYTHON_INTERPRETER) -m dedup_bench.dataset download
 	$(PYTHON_INTERPRETER) -m dedup_bench.dataset prepare
+
+## Run every library once on Febrl 3 and the restaurants (needs make data)
+.PHONY: smoke
+smoke:
+	$(PYTHON_INTERPRETER) -m dedup_bench.smoke run
 
 #################################################################################
 # Self Documenting Commands                                                     #
