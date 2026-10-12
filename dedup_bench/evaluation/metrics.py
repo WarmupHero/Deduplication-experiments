@@ -83,3 +83,57 @@ def pairwise_scores(predicted: pd.Series, true: pd.Series) -> dict[str, float]:
     recall = correct_pairs / true_pairs if true_pairs else 1.0
     f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
     return {"precision": precision, "recall": recall, "f1": f1}
+
+
+def b_cubed_scores(predicted: pd.Series, true: pd.Series) -> dict[str, float]:
+    """
+    B-cubed precision, recall and F1 of a predicted clustering.
+
+    Every record is scored on its own and the scores are averaged, so each
+    record weighs the same however large its entity is (pairwise scores, by
+    contrast, are dominated by large entities). For a record r with predicted
+    cluster C(r) and true entity E(r):
+
+    - precision(r) = |C(r) ∩ E(r)| / |C(r)|
+    - recall(r) = |C(r) ∩ E(r)| / |E(r)|
+
+    Parameters
+    ----------
+    predicted : pd.Series, shape (n_records,)
+        Predicted cluster label of each record, indexed by record ID.
+    true : pd.Series, shape (n_records,)
+        True entity label of each record, indexed by the same record IDs.
+
+    Returns
+    -------
+    dict of str to float
+        ``precision``, ``recall`` (the averages over all records) and ``f1``
+        (their harmonic mean).
+
+    Raises
+    ------
+    ValueError
+        If the two Series do not cover exactly the same record IDs.
+
+    Notes
+    -----
+    Processing:
+    1. Align the two Series on record ID and check they match.
+    2. For every record, count the records in its predicted cluster, in its
+       true entity, and in the intersection of the two.
+    3. Average the per-record precision and recall, and combine them into F1.
+    """
+    if predicted.index.has_duplicates or set(predicted.index) != set(true.index):
+        raise ValueError("predicted and true must cover the same, unique record IDs")
+    frame = pd.DataFrame({"predicted": predicted, "true": true.reindex(predicted.index)})
+
+    # Each record gets the size of its predicted cluster, its true entity and
+    # their intersection; transform keeps the sizes aligned to the records.
+    cluster_size = frame.groupby("predicted")["true"].transform("size")
+    entity_size = frame.groupby("true")["predicted"].transform("size")
+    overlap = frame.groupby(["predicted", "true"])["true"].transform("size")
+    precision = float((overlap / cluster_size).mean())
+    recall = float((overlap / entity_size).mean())
+
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+    return {"precision": precision, "recall": recall, "f1": f1}

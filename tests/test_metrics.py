@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from dedup_bench.evaluation.metrics import count_pairs, pairwise_scores
+from dedup_bench.evaluation.metrics import b_cubed_scores, count_pairs, pairwise_scores
 
 
 def series(labels: list[str]) -> pd.Series:
@@ -47,3 +47,36 @@ def test_pairwise_scores_one_big_cluster() -> None:
 def test_pairwise_scores_reject_mismatched_records() -> None:
     with pytest.raises(ValueError, match="same"):
         pairwise_scores(series(["a", "b"]), series(["a", "b", "c"]))
+
+
+def test_b_cubed_scores_hand_computed() -> None:
+    # Same clustering as the pairwise test. Per record (precision, recall):
+    # r0, r1: (2/2, 2/3); r2: (1/3, 1/3); r3, r4: (2/3, 2/2); r5: (1, 1).
+    # Both averages are 7/9.
+    true = series(["a", "a", "a", "b", "b", "c"])
+    predicted = series(["x", "x", "y", "y", "y", "z"])
+    scores = b_cubed_scores(predicted, true)
+    assert scores["precision"] == pytest.approx(7 / 9)
+    assert scores["recall"] == pytest.approx(7 / 9)
+    assert scores["f1"] == pytest.approx(7 / 9)
+
+
+def test_b_cubed_scores_all_singletons() -> None:
+    # Precision 1 for every record; recall 1/2, 1/2 and 1.
+    scores = b_cubed_scores(series(["1", "2", "3"]), series(["a", "a", "b"]))
+    assert scores["precision"] == 1.0
+    assert scores["recall"] == pytest.approx(2 / 3)
+    assert scores["f1"] == pytest.approx(0.8)
+
+
+def test_b_cubed_scores_one_big_cluster() -> None:
+    # Precision 2/4, 2/4, 1/4, 1/4; recall 1 for every record.
+    scores = b_cubed_scores(series(["x"] * 4), series(["a", "a", "b", "c"]))
+    assert scores["precision"] == pytest.approx(0.375)
+    assert scores["recall"] == 1.0
+
+
+def test_b_cubed_scores_ignore_label_names_and_order() -> None:
+    true = series(["a", "a", "b"])
+    predicted = series(["9", "9", "1"]).iloc[::-1]
+    assert b_cubed_scores(predicted, true) == {"precision": 1.0, "recall": 1.0, "f1": 1.0}

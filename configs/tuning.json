@@ -1,0 +1,23 @@
+{
+  "description": "How the search space in configs/models.json is searched. strategy is grid, random or optuna (one per run). Every model is tuned on the dev split to maximise objective, and its best setting runs once on the test split. Settings listed in not_tuned are experimental factors or fixed procedures: every value is run and reported (label_budget) or chosen by its own rule (blocking), never by the objective.",
+  "strategy": "optuna",
+  "objective": "b_cubed_f1",
+  "seed": 42,
+  "max_seconds_per_model": 1800,
+  "not_tuned": [
+    "blocking.tfidf_knn.top_k",
+    "blocking.tfidf_knn.target_pair_completeness",
+    "active_learning.random_forest.label_budget"
+  ],
+  "grid": {
+    "max_combinations": 500
+  },
+  "random": {
+    "n_trials": 40
+  },
+  "optuna": {
+    "n_trials": 40,
+    "sampler": "tpe",
+    "n_startup_trials": 10
+  }
+}
