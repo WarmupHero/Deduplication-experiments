@@ -24,6 +24,7 @@ truth, so every number in ``result.json`` can be checked against the files.
 
 from collections.abc import Callable
 from dataclasses import dataclass, replace
+from functools import partial
 import hashlib
 import json
 from pathlib import Path
@@ -38,7 +39,7 @@ import typer
 
 from dedup_bench.baselines import equal_keys, exact_key, exact_keys
 from dedup_bench.blocking.candidates import candidates_dir
-from dedup_bench.clustering.graph import connected_components
+from dedup_bench.clustering import graph
 from dedup_bench.config import CONFIGS_DIR, PROJ_ROOT, RESULTS_DIR
 from dedup_bench.dataset import load_datasets_config, load_prepared, record_texts
 from dedup_bench.evaluation.metrics import (
@@ -99,36 +100,50 @@ class Prediction:
 Method = Callable[[SplitData, SplitData, dict[str, Any], int], Prediction]
 
 
-def run_connected_components(
-    train: SplitData, target: SplitData, params: dict[str, Any], seed: int
+def run_graph_clustering(
+    cluster: Callable[..., pd.Series],
+    train: SplitData,
+    target: SplitData,
+    params: dict[str, Any],
+    seed: int,
+    seeded: bool = False,
 ) -> Prediction:
     """
-    Connected components of the candidate pairs above a TF-IDF similarity threshold.
+    Cluster the TF-IDF-scored candidate pairs with one of ``clustering.graph``.
 
     Parameters
     ----------
+    cluster : callable
+        A function of ``clustering.graph``, called with the record IDs, the
+        pairs and the setting.
     train : SplitData
         Unused; nothing is learned.
     target : SplitData
         The split to cluster.
     params : dict
-        ``threshold``.
+        The setting, passed to ``cluster`` by name.
     seed : int
-        Unused; the method is deterministic.
+        Passed to ``cluster`` as ``seed`` when ``seeded`` is set.
+    seeded : bool, default False
+        Whether ``cluster`` takes a seed.
 
     Returns
     -------
     Prediction
-        The components, and the pairs scored by their similarity.
+        The clusters, and the pairs scored by their similarity.
 
     Notes
     -----
     Processing:
-    1. Run ``clustering.graph.connected_components`` on the target's pairs.
+    1. Run ``cluster`` on the target's record IDs and pairs.
     """
     ids = pd.Index(target.records["record_id"])
-    clusters = connected_components(ids, target.pairs, params["threshold"])
+    extra = {"seed": seed} if seeded else {}
+    clusters = cluster(ids, target.pairs, **params, **extra)
     return Prediction(clusters, target.pairs.rename(columns={"similarity": "score"}))
+
+
+run_connected_components = partial(run_graph_clustering, graph.connected_components)
 
 
 def run_exact_key(
@@ -169,6 +184,11 @@ def run_exact_key(
 METHODS: dict[str, Method] = {
     "baselines.exact_key": run_exact_key,
     "graph_clustering.connected_components": run_connected_components,
+    "graph_clustering.center": partial(run_graph_clustering, graph.center),
+    "graph_clustering.merge_center": partial(run_graph_clustering, graph.merge_center),
+    "graph_clustering.markov": partial(run_graph_clustering, graph.markov),
+    "graph_clustering.leiden_cpm": partial(run_graph_clustering, graph.leiden_cpm, seeded=True),
+    "graph_clustering.hierarchical": partial(run_graph_clustering, graph.hierarchical),
 }
 
 

@@ -17,7 +17,7 @@
     }
   },
   "graph_clustering": {
-    "description": "Clustering of the scored candidate graph. threshold drops edges whose similarity is below it before clustering.",
+    "description": "Clustering of the scored candidate graph. threshold drops edges whose similarity is below it before clustering. Hierarchical clustering has no centroid linkage: it needs records as points in Euclidean space, and only pairwise similarities exist here; single linkage at a threshold equals connected components.",
     "connected_components": {
       "threshold": {"low": 0.3, "high": 0.95, "step": 0.05}
     },
@@ -32,7 +32,8 @@
       "expansion": [2],
       "inflation": {"low": 1.2, "high": 4.0, "step": 0.2},
       "pruning_threshold": [0.001],
-      "max_iterations": [100]
+      "max_iterations": [100],
+      "tolerance": [0.000001]
     },
     "leiden_cpm": {
       "threshold": {"low": 0.3, "high": 0.9, "step": 0.05},
@@ -42,7 +43,7 @@
       "n_iterations": [-1]
     },
     "hierarchical": {
-      "method": ["average", "complete", "centroid"],
+      "method": ["average", "complete"],
       "threshold": {"low": 0.3, "high": 0.95, "step": 0.05}
     }
   },

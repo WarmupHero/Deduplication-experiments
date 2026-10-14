@@ -161,3 +161,16 @@ def test_provenance_names_the_commit_and_hashes_every_config() -> None:
     assert {"models.json", "tuning.json", "datasets.json", "experiment.json"} <= set(
         info["config_sha256"]
     )
+
+
+@pytest.mark.parametrize("method", sorted(experiment.METHODS))
+def test_every_method_runs_through_the_runner(tiny_dataset: str, method: str) -> None:
+    # The middle candidate of each setting, as in the smoke test.
+    section, model = method.split(".")
+    space = load_space(section, model)
+    setting = {name: (c := candidates_of(spec))[len(c) // 2] for name, spec in space.items()}
+    splits = experiment.load_splits(tiny_dataset, seed=0)
+    target = experiment.replace(splits["validation"], truth=None)
+    prediction = experiment.METHODS[method](splits["train"], target, setting, 0)
+    assert prediction.clusters.index.equals(pd.Index(target.records["record_id"]))
+    assert prediction.pairs.columns.tolist() == ["left_id", "right_id", "score"]
