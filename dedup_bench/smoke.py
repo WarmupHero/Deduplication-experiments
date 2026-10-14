@@ -40,6 +40,7 @@ import typer
 
 from dedup_bench.config import MODELS_CONFIG, PROCESSED_DATA_DIR
 from dedup_bench.evaluation.metrics import pairwise_scores
+from dedup_bench.tuning import candidates, parse_space
 
 app = typer.Typer()
 
@@ -116,12 +117,13 @@ def load_settings() -> dict[str, dict[str, dict[str, Any]]]:
     -----
     Processing:
     1. Load the JSON file.
-    2. Drop ``description`` keys and replace each list with ``middle(list)``.
+    2. Drop ``description`` keys, expand each list or range to its candidates and
+       take ``middle`` of them.
     """
     config = json.loads(MODELS_CONFIG.read_text(encoding="utf-8"))
     return {
         section: {
-            model: {name: middle(values) for name, values in params.items()}
+            model: {name: middle(candidates(spec)) for name, spec in parse_space(params).items()}
             for model, params in models.items()
             if model != "description"
         }
