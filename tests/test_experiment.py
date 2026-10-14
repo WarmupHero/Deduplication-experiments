@@ -7,7 +7,8 @@ import pytest
 
 from dedup_bench import experiment
 from dedup_bench.blocking import candidates
-from dedup_bench.tuning import load_settings
+from dedup_bench.tuning import candidates as candidates_of
+from dedup_bench.tuning import load_settings, load_space
 
 METHOD = "graph_clustering.connected_components"
 
@@ -58,9 +59,12 @@ def test_run_writes_results_that_evaluate_reproduces(
         "membership.parquet",
         "pairs.parquet",
     }
-    # The threshold range 0.5 to 0.95 in steps of 0.05 is 10 grid trials, plus one test run.
-    assert len(result["trials"]) == 10
-    assert len(seen) == 11
+    # Grid search runs every threshold in the config once, then the test run.
+    n_grid = len(
+        candidates_of(load_space("graph_clustering", "connected_components")["threshold"])
+    )
+    assert len(result["trials"]) == n_grid
+    assert len(seen) == n_grid + 1
     assert all(train_has_truth and target_blind for train_has_truth, target_blind in seen)
 
     membership = pd.read_parquet(out_dir / "membership.parquet")

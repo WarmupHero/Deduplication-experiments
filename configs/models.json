@@ -25,23 +25,23 @@
   "graph_clustering": {
     "description": "Clustering of the scored candidate graph. threshold drops edges whose similarity is below it before clustering.",
     "connected_components": {
-      "threshold": {"low": 0.5, "high": 0.95, "step": 0.05}
+      "threshold": {"low": 0.3, "high": 0.95, "step": 0.05}
     },
     "center": {
-      "threshold": {"low": 0.5, "high": 0.95, "step": 0.05}
+      "threshold": {"low": 0.3, "high": 0.95, "step": 0.05}
     },
     "merge_center": {
-      "threshold": {"low": 0.5, "high": 0.95, "step": 0.05}
+      "threshold": {"low": 0.3, "high": 0.95, "step": 0.05}
     },
     "markov": {
-      "threshold": {"low": 0.5, "high": 0.9, "step": 0.05},
+      "threshold": {"low": 0.3, "high": 0.9, "step": 0.05},
       "expansion": [2],
       "inflation": {"low": 1.2, "high": 4.0, "step": 0.2},
       "pruning_threshold": [0.001],
       "max_iterations": [100]
     },
     "leiden_cpm": {
-      "threshold": {"low": 0.5, "high": 0.9, "step": 0.05},
+      "threshold": {"low": 0.3, "high": 0.9, "step": 0.05},
       "objective_function": ["CPM"],
       "resolution": {"low": 0.3, "high": 0.95, "step": 0.05},
       "beta": [0.01],
@@ -49,7 +49,7 @@
     },
     "hierarchical": {
       "method": ["average", "complete", "centroid"],
-      "threshold": {"low": 0.5, "high": 0.95, "step": 0.05}
+      "threshold": {"low": 0.3, "high": 0.95, "step": 0.05}
     }
   },
   "embedding_clustering": {
