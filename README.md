@@ -20,6 +20,8 @@ make test
 make data                 # download and prepare the datasets (see below)
 make smoke                # run every library once on Febrl 3 and the restaurants
 make candidates           # split every dataset and build its frozen candidate pairs
+make experiment DATASET=cora METHOD=graph_clustering.connected_components
+                          # tune on validation, test once, save to reports/results/
 ```
 
 ## Data

@@ -77,6 +77,11 @@ smoke:
 candidates:
 	$(PYTHON_INTERPRETER) -m dedup_bench.blocking.candidates
 
+## Tune and test one method on one dataset, all seeds (DATASET=... METHOD=section.model)
+.PHONY: experiment
+experiment:
+	$(PYTHON_INTERPRETER) -m dedup_bench.experiment run $(DATASET) $(METHOD)
+
 #################################################################################
 # Self Documenting Commands                                                     #
 #################################################################################

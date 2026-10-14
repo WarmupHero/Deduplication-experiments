@@ -20,6 +20,7 @@ MODELS_DIR = PROJ_ROOT / "models"
 
 REPORTS_DIR = PROJ_ROOT / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
+RESULTS_DIR = REPORTS_DIR / "results"
 
 CONFIGS_DIR = PROJ_ROOT / "configs"
 MODELS_CONFIG = CONFIGS_DIR / "models.json"
