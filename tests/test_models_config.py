@@ -13,7 +13,7 @@ UNIT_INTERVAL_KEYS = {
     "match_probability_threshold",
     "min_similarity",
     "resolution",
-    "target_pair_completeness",
+    "target_reachable_pair_completeness",
     "threshold",
 }
 
@@ -58,7 +58,7 @@ def test_tuning_settings_are_consistent_with_the_models() -> None:
 @pytest.mark.parametrize("section, model", [(s, m) for s, m, _ in iter_models()])
 def test_every_grid_stays_within_the_cap(section: str, model: str) -> None:
     # Values for the settings that are not tuned; any valid value will do here.
-    fixed = {"top_k": 25, "target_pair_completeness": 0.95, "label_budget": 50}
+    fixed = {"top_k": 25, "target_reachable_pair_completeness": 0.95, "label_budget": 50}
     space = tuning.load_space(section, model, fixed)
     trials = tuning.grid_trials(space, tuning.load_settings()["grid"]["max_combinations"])
     assert trials

@@ -19,6 +19,7 @@ make requirements         # pip install -e ".[dev,embeddings,pyjedai]"
 make test
 make data                 # download and prepare the datasets (see below)
 make smoke                # run every library once on Febrl 3 and the restaurants
+make candidates           # split every dataset and build its frozen candidate pairs
 ```
 
 ## Data
@@ -43,7 +44,9 @@ Kaggle API token in the `KAGGLE_API_TOKEN` environment variable.
 ├── LICENSE            <- Open-source license if one is chosen
 ├── Makefile           <- Makefile with convenience commands like `make data` or `make train`
 ├── README.md          <- The top-level README for developers using this project.
-├── configs            <- Hyperparameter grids for every model (models.json), tuned on the dev split
+├── configs            <- Search spaces (models.json) and tuning (tuning.json), datasets and
+│                         splits (datasets.json, experiment.json); datasets_smoke.json is
+│                         used only by make smoke
 ├── data
 │   ├── external       <- Data from third party sources.
 │   ├── interim        <- Intermediate data that has been transformed.

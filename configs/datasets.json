@@ -1,0 +1,49 @@
+{
+  "description": "How the benchmark reads each prepared dataset (data/processed/<dataset>/records.parquet). text_fields are joined, in order and skipping nulls, into one text per record for TF-IDF blocking. Cora's fields are often misassigned by its parser, so all of them are used. Field lists for the field-by-field methods are added with those methods.",
+  "febrl3": {
+    "text_fields": [
+      "given_name",
+      "surname",
+      "street_number",
+      "address_1",
+      "address_2",
+      "suburb",
+      "postcode",
+      "state",
+      "date_of_birth",
+      "soc_sec_id"
+    ]
+  },
+  "restaurants": {
+    "text_fields": ["name", "address", "city", "phone", "category"]
+  },
+  "pricerunner": {
+    "text_fields": ["title"]
+  },
+  "skroutz": {
+    "text_fields": ["title"]
+  },
+  "abt_buy": {
+    "text_fields": ["name"]
+  },
+  "cora": {
+    "text_fields": [
+      "authors",
+      "title",
+      "booktitle",
+      "journal",
+      "year",
+      "volume",
+      "pages",
+      "editor",
+      "publisher",
+      "institution",
+      "address",
+      "month",
+      "date",
+      "tech",
+      "type",
+      "note"
+    ]
+  }
+}

@@ -4,12 +4,19 @@ Quality metrics for a predicted clustering of records into entities.
 Input: two membership vectors over the same records, the predicted cluster
 and the true entity of every record, as pandas Series indexed by record ID.
 
-Output: precision, recall and F1 scores. Pairwise scores count every pair of
-records placed in the same cluster, so an entity with k records contributes
-k (k - 1) / 2 pairs.
+Output: precision, recall and F1 scores (pairwise, B-cubed and cluster-level),
+and the adjusted Rand index. Pairwise scores count every pair of records placed
+in the same cluster, so an entity with k records contributes k (k - 1) / 2
+pairs.
+
+Blocking is scored separately, from the candidate pairs and the true entities:
+pair completeness (direct and reachable), reduction ratio and pair quality.
 """
 
+import numpy as np
 import pandas as pd
+from scipy.sparse import coo_matrix
+from scipy.sparse.csgraph import connected_components
 
 
 def count_pairs(sizes: pd.Series) -> int:
@@ -137,3 +144,167 @@ def b_cubed_scores(predicted: pd.Series, true: pd.Series) -> dict[str, float]:
 
     f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
     return {"precision": precision, "recall": recall, "f1": f1}
+
+
+def cluster_scores(predicted: pd.Series, true: pd.Series) -> dict[str, float]:
+    """
+    Cluster-level precision, recall and F1 of a predicted clustering.
+
+    A predicted cluster is correct only if it holds exactly the records of one
+    true entity, no more and no fewer. Singletons count like any other cluster.
+
+    - precision = correct clusters / predicted clusters
+    - recall = correct clusters / true entities
+
+    Parameters
+    ----------
+    predicted : pd.Series, shape (n_records,)
+        Predicted cluster label of each record, indexed by record ID.
+    true : pd.Series, shape (n_records,)
+        True entity label of each record, indexed by the same record IDs.
+
+    Returns
+    -------
+    dict of str to float
+        ``precision``, ``recall`` and ``f1``.
+
+    Raises
+    ------
+    ValueError
+        If the two Series do not cover exactly the same record IDs.
+
+    Notes
+    -----
+    Processing:
+    1. Align the two Series on record ID and check they match.
+    2. Count the predicted clusters that equal a true entity.
+    3. Divide by the numbers of predicted clusters and true entities, and
+       combine into F1.
+    """
+    if predicted.index.has_duplicates or set(predicted.index) != set(true.index):
+        raise ValueError("predicted and true must cover the same, unique record IDs")
+    frame = pd.DataFrame({"predicted": predicted, "true": true.reindex(predicted.index)})
+
+    # A (cluster, entity) overlap is a correct cluster when it is the whole
+    # cluster and the whole entity.
+    overlap = frame.groupby(["predicted", "true"]).size()
+    cluster_size = frame.groupby("predicted").size()
+    entity_size = frame.groupby("true").size()
+    whole_cluster = (
+        overlap.to_numpy() == cluster_size[overlap.index.get_level_values(0)].to_numpy()
+    )
+    whole_entity = overlap.to_numpy() == entity_size[overlap.index.get_level_values(1)].to_numpy()
+    correct = int((whole_cluster & whole_entity).sum())
+    n_predicted, n_true = len(cluster_size), len(entity_size)
+
+    precision = correct / n_predicted
+    recall = correct / n_true
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+    return {"precision": precision, "recall": recall, "f1": f1}
+
+
+def adjusted_rand_index(predicted: pd.Series, true: pd.Series) -> float:
+    """
+    Adjusted Rand index (Hubert and Arabie, 1985) of a predicted clustering.
+
+    The share of record pairs on which the two clusterings agree (together in
+    both, or apart in both), corrected for chance: 1 for identical
+    clusterings, about 0 for a random one, and negative when worse than
+    random.
+
+    Parameters
+    ----------
+    predicted : pd.Series, shape (n_records,)
+        Predicted cluster label of each record, indexed by record ID.
+    true : pd.Series, shape (n_records,)
+        True entity label of each record, indexed by the same record IDs.
+
+    Returns
+    -------
+    float
+        The index. When it is undefined (both clusterings all singletons, or
+        both one cluster) it is 1.0, as in scikit-learn.
+
+    Raises
+    ------
+    ValueError
+        If the two Series do not cover exactly the same record IDs.
+
+    Notes
+    -----
+    Processing:
+    1. Align the two Series on record ID and check they match.
+    2. Count the pairs together in both clusterings (``both``), in the
+       predicted one (``a``) and in the true one (``b``), and all pairs.
+    3. ARI = (both - expected) / (max - expected), with
+       expected = a b / all pairs and max = (a + b) / 2.
+    """
+    if predicted.index.has_duplicates or set(predicted.index) != set(true.index):
+        raise ValueError("predicted and true must cover the same, unique record IDs")
+    frame = pd.DataFrame({"predicted": predicted, "true": true.reindex(predicted.index)})
+
+    both = count_pairs(frame.groupby(["predicted", "true"]).size())
+    a = count_pairs(frame.groupby("predicted").size())
+    b = count_pairs(frame.groupby("true").size())
+    n = len(frame)
+    expected = a * b / (n * (n - 1) / 2) if n > 1 else 0.0
+    maximum = (a + b) / 2
+    if maximum == expected:
+        return 1.0
+    return (both - expected) / (maximum - expected)
+
+
+def blocking_scores(left: pd.Series, right: pd.Series, true: pd.Series) -> dict[str, float]:
+    """
+    How well a set of candidate pairs covers the true matches.
+
+    - pair completeness (blocking recall) = true matches among the candidates
+      / all true matches
+    - reachable pair completeness = true matches joined by a chain of
+      candidate pairs that are true matches / all true matches; what a perfect
+      matcher followed by transitive clustering could recover
+    - reduction ratio = 1 - candidates / all record pairs
+    - pair quality = true matches among the candidates / candidates
+
+    Parameters
+    ----------
+    left, right : pd.Series of str, shape (n_pairs,)
+        Record IDs of the two records of each candidate pair; each unordered
+        pair once.
+    true : pd.Series, shape (n_records,)
+        True entity of every record, indexed by record ID.
+
+    Returns
+    -------
+    dict of str to float
+        ``pair_completeness``, ``reachable_pair_completeness``,
+        ``reduction_ratio``, ``pair_quality`` and ``n_candidates``. A ratio
+        whose denominator is zero is 1.0, as in ``pairwise_scores``.
+
+    Notes
+    -----
+    Processing:
+    1. Look up both records' entities and count the candidates that match.
+    2. Join the records along the matching candidates into connected
+       components; each lies inside one entity, so the pairs within the
+       components are the reachable true matches.
+    3. Count the true matches from the entity sizes and all pairs from the
+       record count, and derive the ratios.
+    """
+    n_candidates = len(left)
+    matching = true[left].to_numpy() == true[right].to_numpy()
+    found = int(matching.sum())
+    left_at = true.index.get_indexer(left[matching])
+    right_at = true.index.get_indexer(right[matching])
+    graph = coo_matrix((np.ones(found), (left_at, right_at)), shape=(len(true), len(true)))
+    _, component = connected_components(graph, directed=False)
+    reachable = count_pairs(pd.Series(component).value_counts())
+    true_pairs = count_pairs(true.value_counts())
+    all_pairs = len(true) * (len(true) - 1) // 2
+    return {
+        "pair_completeness": found / true_pairs if true_pairs else 1.0,
+        "reachable_pair_completeness": reachable / true_pairs if true_pairs else 1.0,
+        "reduction_ratio": 1 - n_candidates / all_pairs if all_pairs else 1.0,
+        "pair_quality": found / n_candidates if n_candidates else 1.0,
+        "n_candidates": n_candidates,
+    }

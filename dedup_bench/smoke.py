@@ -3,13 +3,14 @@ Smoke test: run every library of the benchmark once on small datasets.
 
 This checks that the environment works (compiled dependencies, model
 downloads, library APIs) and that each method produces a sensible clustering.
-It is not a benchmark: there is no dev / test split, and settings are not
-tuned. Model hyperparameters come from ``configs/models.json`` (the middle
-candidate of each list); only the plain call settings a library needs to run
-at all are fixed here.
+It is not a benchmark: there is no train / validation / test split, and
+settings are not tuned. Model hyperparameters come from ``configs/models.json``
+(the middle candidate of each list or range); only the plain call settings a
+library needs to run at all are fixed here.
 
 Input: prepared datasets in ``data/processed/<dataset>/`` (run ``make data``
-first), by default Febrl 3 and the restaurants.
+first), by default Febrl 3 and the restaurants, with the fields each library
+uses from ``configs/datasets_smoke.json``.
 
 Output: a table on the console with, for every dataset and check, the run
 time, the number of predicted clusters, pairwise precision / recall / F1 and a
@@ -38,7 +39,9 @@ from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import connected_components
 import typer
 
-from dedup_bench.config import MODELS_CONFIG, PROCESSED_DATA_DIR
+from dedup_bench.blocking.tfidf_knn import nearest_neighbours, neighbour_pairs
+from dedup_bench.config import DATASETS_SMOKE_CONFIG, MODELS_CONFIG
+from dedup_bench.dataset import load_prepared, record_texts
 from dedup_bench.evaluation.metrics import pairwise_scores
 from dedup_bench.tuning import candidates, parse_space
 
@@ -46,29 +49,11 @@ app = typer.Typer()
 
 SEED = 42
 
-# Fields compared per dataset, and the columns used for blocking where a
-# library needs explicit blocking keys. Febrl's dates and IDs are compared as
-# plain strings.
+# Per dataset, the fields each library compares and its blocking keys.
 SMOKE_DATASETS: dict[str, dict[str, list[str]]] = {
-    "febrl3": {
-        "fields": [
-            "given_name",
-            "surname",
-            "street_number",
-            "address_1",
-            "address_2",
-            "suburb",
-            "postcode",
-            "state",
-            "date_of_birth",
-            "soc_sec_id",
-        ],
-        "blocking": ["surname", "date_of_birth", "postcode", "soc_sec_id"],
-    },
-    "restaurants": {
-        "fields": ["name", "address", "city", "phone", "category"],
-        "blocking": ["city", "name"],
-    },
+    name: spec
+    for name, spec in json.loads(DATASETS_SMOKE_CONFIG.read_text(encoding="utf-8")).items()
+    if name != "description"
 }
 
 # A check takes the records, the true entities and the dataset settings, and
@@ -155,33 +140,6 @@ def seed_everything(seed: int) -> None:
     """
     random.seed(seed)
     np.random.seed(seed)
-
-
-def record_texts(records: pd.DataFrame, fields: list[str]) -> pd.Series:
-    """
-    Join a record's non-null fields into one string.
-
-    Parameters
-    ----------
-    records : pd.DataFrame, shape (n_records, n_columns)
-        Prepared records with ``record_id`` and the listed fields.
-    fields : list of str
-        Fields to join, in order.
-
-    Returns
-    -------
-    pd.Series of str, shape (n_records,)
-        Space-joined text, indexed by record ID.
-
-    Notes
-    -----
-    Processing:
-    1. Fill nulls with empty strings, join the fields with spaces and collapse
-       repeated spaces.
-    """
-    text = records[fields].fillna("").astype(str).agg(" ".join, axis=1)
-    text = text.str.replace(r"\s+", " ", regex=True).str.strip()
-    return pd.Series(text.to_numpy(), index=records["record_id"].to_numpy())
 
 
 def clusters_from_pairs(record_ids: pd.Index, left: np.ndarray, right: np.ndarray) -> pd.Series:
@@ -283,32 +241,15 @@ def tfidf_knn_pairs(texts: pd.Series) -> tuple[np.ndarray, np.ndarray, np.ndarra
     Notes
     -----
     Processing:
-    1. Vectorise with the ``blocking.tfidf_knn`` settings.
-    2. Find each record's ``top_k`` nearest neighbours by cosine distance.
-    3. Keep each unordered pair once, without self-pairs.
+    1. Find each record's ``top_k`` nearest neighbours with the
+       ``blocking.tfidf_knn`` settings.
+    2. Keep each unordered pair once.
     """
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.neighbors import NearestNeighbors
-
-    params = SETTINGS["blocking"]["tfidf_knn"]
-    vectors = TfidfVectorizer(
-        analyzer=params["analyzer"],
-        ngram_range=tuple(params["ngram_range"]),
-        sublinear_tf=params["sublinear_tf"],
-    ).fit_transform(texts)
-    k = min(params["top_k"] + 1, len(texts))
-    distances, neighbours = (
-        NearestNeighbors(n_neighbors=k, metric="cosine").fit(vectors).kneighbors()
-    )
-    left = np.repeat(np.arange(len(texts)), neighbours.shape[1])
-    right = neighbours.ravel()
-    similarity = 1 - distances.ravel()
-    keep = left < right
-    pairs = pd.DataFrame({"l": left[keep], "r": right[keep], "s": similarity[keep]})
-    # kneighbors without X excludes the point itself; a pair found from both
-    # ends appears twice, so keep it once.
-    pairs = pairs.drop_duplicates(["l", "r"])
-    return pairs["l"].to_numpy(), pairs["r"].to_numpy(), pairs["s"].to_numpy()
+    params = dict(SETTINGS["blocking"]["tfidf_knn"])
+    top_k = params.pop("top_k")
+    params.pop("target_reachable_pair_completeness")
+    pairs = neighbour_pairs(*nearest_neighbours(texts, top_k, **params), top_k)
+    return pairs["left"].to_numpy(), pairs["right"].to_numpy(), pairs["similarity"].to_numpy()
 
 
 def check_string_grouper(
@@ -733,9 +674,7 @@ def run_check(name: str, check: Check, dataset: str) -> list[dict[str, Any]]:
     2. Time the check; catch any exception so other checks still run.
     3. Score each clustering with ``pairwise_scores`` and fingerprint it.
     """
-    records = pd.read_parquet(PROCESSED_DATA_DIR / dataset / "records.parquet")
-    truth = pd.read_parquet(PROCESSED_DATA_DIR / dataset / "truth.parquet")
-    truth = pd.Series(truth["entity_id"].to_numpy(), index=truth["record_id"].to_numpy())
+    records, truth = load_prepared(dataset)
     seed_everything(SEED)
 
     start = time.perf_counter()

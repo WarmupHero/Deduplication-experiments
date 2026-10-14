@@ -19,7 +19,8 @@ their SHA-256 checksums in ``data/raw/<dataset>/``, and two Parquet files in
   and ``entity_id``, the true entity of every record; methods never read it
 
 Run ``python -m dedup_bench.dataset download`` and then
-``python -m dedup_bench.dataset prepare`` (``make data`` runs both).
+``python -m dedup_bench.dataset prepare`` (``make data`` runs both). Later
+steps read the prepared files with ``load_prepared`` and ``record_texts``.
 """
 
 from collections.abc import Callable
@@ -770,6 +771,59 @@ def prepare_dataset(name: str) -> tuple[pd.DataFrame, pd.DataFrame]:
     truth.to_parquet(out_dir / "truth.parquet", index=False)
     logger.success(f"{name}: {n_records:,} records, {n_entities:,} entities")
     return records, truth
+
+
+def load_prepared(name: str) -> tuple[pd.DataFrame, pd.Series]:
+    """
+    Read a prepared dataset.
+
+    Parameters
+    ----------
+    name : str
+        Key of ``DATASETS``.
+
+    Returns
+    -------
+    records : pd.DataFrame, shape (n_records, n_columns)
+        ``records.parquet`` as written by ``prepare_dataset``.
+    truth : pd.Series of str, shape (n_records,)
+        True entity of every record, indexed by record ID.
+
+    Notes
+    -----
+    Processing:
+    1. Read both Parquet files and index the entity IDs by record ID.
+    """
+    records = pd.read_parquet(PROCESSED_DATA_DIR / name / "records.parquet")
+    truth = pd.read_parquet(PROCESSED_DATA_DIR / name / "truth.parquet")
+    return records, pd.Series(truth["entity_id"].to_numpy(), index=truth["record_id"].to_numpy())
+
+
+def record_texts(records: pd.DataFrame, fields: list[str]) -> pd.Series:
+    """
+    Join a record's non-null fields into one string.
+
+    Parameters
+    ----------
+    records : pd.DataFrame, shape (n_records, n_columns)
+        Prepared records with ``record_id`` and the listed fields.
+    fields : list of str
+        Fields to join, in order.
+
+    Returns
+    -------
+    pd.Series of str, shape (n_records,)
+        Space-joined text, indexed by record ID.
+
+    Notes
+    -----
+    Processing:
+    1. Fill nulls with empty strings, join the fields with spaces and collapse
+       repeated spaces.
+    """
+    text = records[fields].fillna("").astype(str).agg(" ".join, axis=1)
+    text = text.str.replace(r"\s+", " ", regex=True).str.strip()
+    return pd.Series(text.to_numpy(), index=records["record_id"].to_numpy())
 
 
 def selected(names: list[str] | None) -> list[str]:

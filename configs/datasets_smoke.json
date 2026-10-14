@@ -1,0 +1,22 @@
+{
+  "description": "Used only by the smoke test (make smoke), not by the benchmark, whose dataset settings are in configs/datasets.json. Per dataset: fields lists the columns each library compares or joins into one text, and blocking the columns used as blocking keys by libraries that need explicit ones (Splink, recordlinkage, pyJedAI). Febrl's dates and IDs are compared as plain strings.",
+  "febrl3": {
+    "fields": [
+      "given_name",
+      "surname",
+      "street_number",
+      "address_1",
+      "address_2",
+      "suburb",
+      "postcode",
+      "state",
+      "date_of_birth",
+      "soc_sec_id"
+    ],
+    "blocking": ["surname", "date_of_birth", "postcode", "soc_sec_id"]
+  },
+  "restaurants": {
+    "fields": ["name", "address", "city", "phone", "category"],
+    "blocking": ["city", "name"]
+  }
+}

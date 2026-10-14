@@ -72,6 +72,11 @@ data:
 smoke:
 	$(PYTHON_INTERPRETER) -m dedup_bench.smoke run
 
+## Split every dataset and build its frozen candidate pairs (needs make data)
+.PHONY: candidates
+candidates:
+	$(PYTHON_INTERPRETER) -m dedup_bench.blocking.candidates
+
 #################################################################################
 # Self Documenting Commands                                                     #
 #################################################################################

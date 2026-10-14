@@ -1,13 +1,13 @@
 {
-  "description": "Search space for every model in the benchmark; configs/tuning.json says how it is searched. Each hyperparameter is either a list of choices or a range {\"low\", \"high\", \"step\"}: grid search walks a range in steps, random search and Optuna sample from it (whole numbers when low, high and step are all integers). A single-value list is a fixed setting. Every trial is scored on the dev split and the best setting runs once on the test split. Names follow each library's own argument names where a setting maps to one. Similarities and match probabilities are in [0, 1]. Which fields to compare is dataset-specific and not part of this file.",
+  "description": "Search space for every model in the benchmark; configs/tuning.json says how it is searched. Each hyperparameter is either a list of choices or a range {\"low\", \"high\", \"step\"}: grid search walks a range in steps, random search and Optuna sample from it (whole numbers when low, high and step are all integers). A single-value list is a fixed setting. Every trial is trained on the train split and scored on the validation split and the best setting runs once on the test split. Names follow each library's own argument names where a setting maps to one. Similarities and match probabilities are in [0, 1]. Which fields to compare is dataset-specific and not part of this file.",
   "blocking": {
-    "description": "Candidate generation shared by every method on a dataset: TF-IDF character n-grams and the top-k most similar records per record. Not tuned on the objective: the smallest top_k whose pair completeness on dev reaches target_pair_completeness is frozen for all methods.",
+    "description": "Candidate generation shared by every method on a dataset: TF-IDF character n-grams and the top-k most similar records per record. Not tuned on the objective: the smallest top_k whose reachable pair completeness on validation reaches target_reachable_pair_completeness is frozen for all methods. A true pair is reachable when a chain of candidate pairs that are true matches joins its two records, so it counts what a perfect matcher followed by transitive clustering could recover; entities with hundreds of records (Cora) need not have every internal pair as a candidate.",
     "tfidf_knn": {
       "analyzer": ["char_wb"],
       "ngram_range": [[2, 4]],
       "sublinear_tf": [true],
       "top_k": [10, 25, 50],
-      "target_pair_completeness": [0.95]
+      "target_reachable_pair_completeness": [0.95]
     }
   },
   "baselines": {
@@ -87,7 +87,7 @@
     }
   },
   "active_learning": {
-    "description": "A random forest on the candidate pairs' similarity features that asks a simulated oracle (answering from the dev entities' ground truth) about the pairs it is least sure of. It starts from initial_labels random pairs, then queries query_batch_size pairs per round, those whose match probability is closest to 0.5, until label_budget labels are used. label_budget is not tuned: every value is run and reported, giving a score-versus-labels curve.",
+    "description": "A random forest on the candidate pairs' similarity features that asks a simulated oracle (answering from the train entities' ground truth) about the pairs it is least sure of. It starts from initial_labels random pairs, then queries query_batch_size pairs per round, those whose match probability is closest to 0.5, until label_budget labels are used. label_budget is not tuned: every value is run and reported, giving a score-versus-labels curve.",
     "random_forest": {
       "label_budget": [10, 25, 50, 100, 200, 500],
       "initial_labels": [10],
@@ -99,7 +99,7 @@
     }
   },
   "supervised": {
-    "description": "Upper bound: pair classifiers trained on similarity features of labelled dev pairs. threshold is the predicted match probability above which a pair counts as a match.",
+    "description": "Upper bound: pair classifiers trained on similarity features of labelled train pairs. threshold is the predicted match probability above which a pair counts as a match.",
     "random_forest": {
       "n_estimators": {"low": 100, "high": 500, "step": 100},
       "max_depth": [null, 10, 20],

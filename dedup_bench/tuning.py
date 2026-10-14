@@ -4,9 +4,9 @@ Hyperparameter search shared by every model: grid, random or Optuna.
 Input: a model's search space from ``configs/models.json`` (each hyperparameter
 a list of choices or a ``{"low", "high", "step"}`` range), the search settings
 from ``configs/tuning.json``, and an objective: a function from a setting to
-its score on the dev split (higher is better).
+its score on the validation split (higher is better).
 
-Output: a ``TuningResult`` with the best setting, its dev score and every
+Output: a ``TuningResult`` with the best setting, its validation score and every
 trial (setting, score, seconds), so the search itself can be inspected.
 """
 
@@ -102,7 +102,7 @@ class TuningResult:
     best_params : dict
         The setting with the highest objective.
     best_score : float
-        Its objective value on the dev split.
+        Its objective value on the validation split.
     trials : list of dict
         Every trial in run order: ``params``, ``score`` and ``seconds``.
     strategy : str
@@ -378,7 +378,7 @@ def tune(
     space : dict of str to Choice or Range
         The search space, e.g. from ``load_space``.
     objective : callable
-        Maps a setting to its dev score (higher is better).
+        Maps a setting to its validation score (higher is better).
     settings : dict or None, default None
         Search settings; ``configs/tuning.json`` when None.
 

@@ -1,0 +1,10 @@
+{
+  "description": "Which datasets the benchmark runs on, and how each is split. Records are split by entity, so no entity spans two splits, into train / validation / test at the given shares of records. Each seed gives a different split and also seeds the methods. Skroutz is left out until the scaling step.",
+  "datasets": ["febrl3", "restaurants", "pricerunner", "abt_buy", "cora"],
+  "seeds": [0, 1, 2, 3, 4],
+  "split": {
+    "train": 0.6,
+    "validation": 0.2,
+    "test": 0.2
+  }
+}
