@@ -1,0 +1,320 @@
+{
+  "dataset": "abt_buy",
+  "method": "baselines.exact_key",
+  "seed": 2,
+  "top_k": 10,
+  "objective": "b_cubed_f1",
+  "strategy": "optuna",
+  "best_params": {
+    "token_sort": true
+  },
+  "validation_score": 0.6661538461538461,
+  "test": {
+    "pairwise_precision": 1.0,
+    "pairwise_recall": 0.008888888888888889,
+    "pairwise_f1": 0.017621145374449337,
+    "b_cubed_precision": 1.0,
+    "b_cubed_recall": 0.49885057471264366,
+    "b_cubed_f1": 0.665644171779141,
+    "cluster_precision": 0.004618937644341801,
+    "cluster_recall": 0.009302325581395349,
+    "cluster_f1": 0.006172839506172839,
+    "ari": 0.017579881984051256,
+    "n_clusters": 433,
+    "n_entities": 215
+  },
+  "seconds_total": 0.6498700000811368,
+  "seconds_test": 0.006069700000807643,
+  "peak_mb": 137,
+  "trials": [
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.015411100001074374
+    },
+    {
+      "params": {
+        "token_sort": false
+      },
+      "score": 0.6620512601695397,
+      "seconds": 0.01320859999395907
+    },
+    {
+      "params": {
+        "token_sort": false
+      },
+      "score": 0.6620512601695397,
+      "seconds": 0.012907000025734305
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014272599946707487
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014475999982096255
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.01413129991851747
+    },
+    {
+      "params": {
+        "token_sort": false
+      },
+      "score": 0.6620512601695397,
+      "seconds": 0.012601699912920594
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.021331600029952824
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014681699918583035
+    },
+    {
+      "params": {
+        "token_sort": false
+      },
+      "score": 0.6620512601695397,
+      "seconds": 0.013844100059941411
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014899299945682287
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.015054699964821339
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014917099964804947
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014655299950391054
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.02312619995791465
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014701600070111454
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014524800004437566
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014763699960894883
+    },
+    {
+      "params": {
+        "token_sort": false
+      },
+      "score": 0.6620512601695397,
+      "seconds": 0.013275699922814965
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.01532859995495528
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.0142780999885872
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.021580600063316524
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014181300066411495
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.01429910003207624
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014826099970377982
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014640100067481399
+    },
+    {
+      "params": {
+        "token_sort": false
+      },
+      "score": 0.6620512601695397,
+      "seconds": 0.013226500013843179
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014526900020428002
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.021769699989818037
+    },
+    {
+      "params": {
+        "token_sort": false
+      },
+      "score": 0.6620512601695397,
+      "seconds": 0.013048000051639974
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014219700009562075
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014163599931634963
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014095099992118776
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014665400027297437
+    },
+    {
+      "params": {
+        "token_sort": false
+      },
+      "score": 0.6620512601695397,
+      "seconds": 0.012775499955751002
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.021102300030179322
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014139599981717765
+    },
+    {
+      "params": {
+        "token_sort": false
+      },
+      "score": 0.6620512601695397,
+      "seconds": 0.01298650004900992
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014663599897176027
+    },
+    {
+      "params": {
+        "token_sort": true
+      },
+      "score": 0.6661538461538461,
+      "seconds": 0.014333999948576093
+    }
+  ],
+  "git_commit": "7fc9c84afb97505b8cad4aeaaae92d5bf39943e6",
+  "git_dirty": false,
+  "config_sha256": {
+    "datasets.json": "e7a97477c5edf771f8da03e3bbb63f13fa73cfd275145cba658b545030cb34c7",
+    "datasets_smoke.json": "6b8692a91f62f450dc082d80aa9ed1bfaebcc108738028125e0fb6248dd7eee5",
+    "experiment.json": "c8c1926eed76de096ba708a9798ca261bf514a680d7b32ac221692b006c50856",
+    "models.json": "b01aa86a8c59086fc85fc257bc2c1a418bad1a37bf8e54d137500526ee0cf98f",
+    "tuning.json": "050715af58d6de84e9ae42ac63cb2b385f3954b374bfa3b9acf0adb2056450c5"
+  }
+}
