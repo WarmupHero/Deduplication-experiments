@@ -36,10 +36,11 @@ from loguru import logger
 import pandas as pd
 import typer
 
+from dedup_bench.baselines import equal_keys, exact_key, exact_keys
 from dedup_bench.blocking.candidates import candidates_dir
 from dedup_bench.clustering.graph import connected_components
 from dedup_bench.config import CONFIGS_DIR, PROJ_ROOT, RESULTS_DIR
-from dedup_bench.dataset import load_prepared
+from dedup_bench.dataset import load_datasets_config, load_prepared, record_texts
 from dedup_bench.evaluation.metrics import (
     adjusted_rand_index,
     b_cubed_scores,
@@ -63,12 +64,16 @@ class SplitData:
         The split's normalised records.
     pairs : pd.DataFrame, shape (n_pairs, 3)
         Its frozen candidate pairs: ``left_id``, ``right_id``, ``similarity``.
+    texts : pd.Series of str, shape (n_records,)
+        Each record's normalised text fields joined into one string (the
+        dataset's ``text_fields``), indexed by record ID.
     truth : pd.Series of str or None, shape (n_records,)
         True entity per record ID; None when the method must not see it.
     """
 
     records: pd.DataFrame
     pairs: pd.DataFrame
+    texts: pd.Series
     truth: pd.Series | None
 
 
@@ -126,8 +131,43 @@ def run_connected_components(
     return Prediction(clusters, target.pairs.rename(columns={"similarity": "score"}))
 
 
+def run_exact_key(
+    train: SplitData, target: SplitData, params: dict[str, Any], seed: int
+) -> Prediction:
+    """
+    Baseline: candidate pairs whose normalised texts are identical.
+
+    Parameters
+    ----------
+    train : SplitData
+        Unused; nothing is learned.
+    target : SplitData
+        The split to cluster.
+    params : dict
+        ``token_sort``.
+    seed : int
+        Unused; the method is deterministic.
+
+    Returns
+    -------
+    Prediction
+        The clusters, and every pair scored 1 if its keys are equal, else 0.
+
+    Notes
+    -----
+    Processing:
+    1. Run ``baselines.exact_key`` on the target's texts and pairs.
+    2. Score each pair by whether its two keys are equal.
+    """
+    clusters = exact_key(target.texts, target.pairs, params["token_sort"])
+    same = equal_keys(exact_keys(target.texts, params["token_sort"]), target.pairs)
+    pairs = target.pairs[["left_id", "right_id"]].assign(score=same.astype(float))
+    return Prediction(clusters, pairs)
+
+
 # Methods by their ``<section>.<model>`` name in configs/models.json.
 METHODS: dict[str, Method] = {
+    "baselines.exact_key": run_exact_key,
     "graph_clustering.connected_components": run_connected_components,
 }
 
@@ -156,11 +196,12 @@ def load_splits(dataset: str, seed: int) -> dict[str, SplitData]:
     Notes
     -----
     Processing:
-    1. Load the normalised records and truth, and recompute the seed's entity
-       split.
+    1. Load the normalised records and truth, join each record's text fields,
+       and recompute the seed's entity split.
     2. Read each split's candidate pairs.
     """
     records, truth = load_prepared(dataset, normalised=True)
+    texts = record_texts(records, load_datasets_config()[dataset]["text_fields"])
     split = entity_split(truth, seed, load_experiment()["split"])
     splits = {}
     for name in SPLITS:
@@ -171,6 +212,7 @@ def load_splits(dataset: str, seed: int) -> dict[str, SplitData]:
         splits[name] = SplitData(
             records[records["record_id"].isin(ids)].reset_index(drop=True),
             pd.read_parquet(path),
+            texts[ids],
             truth[ids],
         )
     return splits

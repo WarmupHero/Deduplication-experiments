@@ -252,40 +252,6 @@ def tfidf_knn_pairs(texts: pd.Series) -> tuple[np.ndarray, np.ndarray, np.ndarra
     return pairs["left"].to_numpy(), pairs["right"].to_numpy(), pairs["similarity"].to_numpy()
 
 
-def check_string_grouper(
-    records: pd.DataFrame, truth: pd.Series, spec: dict[str, list[str]]
-) -> dict[str, pd.Series]:
-    """
-    Baseline: string_grouper's TF-IDF grouping of the joined record text.
-
-    Parameters
-    ----------
-    records : pd.DataFrame
-        Prepared records.
-    truth : pd.Series
-        True entity per record ID (unused; part of the check signature).
-    spec : dict
-        ``SMOKE_DATASETS`` entry with the fields to join.
-
-    Returns
-    -------
-    dict of str to pd.Series
-        ``{"string_grouper": clusters}``.
-
-    Notes
-    -----
-    Processing:
-    1. Join the fields and group similar strings with the
-       ``baselines.string_grouper`` settings.
-    """
-    from string_grouper import group_similar_strings
-
-    params = SETTINGS["baselines"]["string_grouper"]
-    texts = record_texts(records, spec["fields"])
-    groups = group_similar_strings(texts, n_blocks=None, **params)
-    return {"string_grouper": groups["group_rep_index"]}
-
-
 def check_graph_clustering(
     records: pd.DataFrame, truth: pd.Series, spec: dict[str, list[str]]
 ) -> dict[str, pd.Series]:
@@ -294,8 +260,12 @@ def check_graph_clustering(
 
     Parameters
     ----------
-    records, truth, spec
-        See ``check_string_grouper``.
+    records : pd.DataFrame
+        Prepared records.
+    truth : pd.Series
+        True entity per record ID (unused; part of the check signature).
+    spec : dict
+        ``SMOKE_DATASETS`` entry with the fields to compare.
 
     Returns
     -------
@@ -383,7 +353,7 @@ def check_embeddings(
     Parameters
     ----------
     records, truth, spec
-        See ``check_string_grouper``.
+        See ``check_graph_clustering``.
 
     Returns
     -------
@@ -452,7 +422,7 @@ def check_recordlinkage(
     Parameters
     ----------
     records, truth, spec
-        See ``check_string_grouper``.
+        See ``check_graph_clustering``.
 
     Returns
     -------
@@ -521,7 +491,7 @@ def check_splink(
     Parameters
     ----------
     records, truth, spec
-        See ``check_string_grouper``.
+        See ``check_graph_clustering``.
 
     Returns
     -------
@@ -575,7 +545,7 @@ def check_pyjedai(
     Parameters
     ----------
     records, truth, spec
-        See ``check_string_grouper``.
+        See ``check_graph_clustering``.
 
     Returns
     -------
@@ -638,7 +608,6 @@ def check_pyjedai(
 
 
 CHECKS: dict[str, Check] = {
-    "string_grouper": check_string_grouper,
     "graph": check_graph_clustering,
     "embeddings": check_embeddings,
     "recordlinkage": check_recordlinkage,
