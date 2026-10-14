@@ -1,9 +1,11 @@
 import io
+import json
 from pathlib import Path
 import zipfile
 
 import pandas as pd
 import pytest
+import typer
 
 from dedup_bench import dataset
 from dedup_bench.config import PROCESSED_DATA_DIR
@@ -137,3 +139,150 @@ def test_read_raw_bytes_requires_a_member_for_multi_file_zips(tmp_path: Path) ->
         dataset.read_raw_bytes(tmp_path, "two.zip")
     assert dataset.read_raw_bytes(tmp_path, "two.zip", "b.csv") == b"y"
     assert io.BytesIO(dataset.read_raw_bytes(tmp_path, "two.zip", "a.csv")).read() == b"x"
+
+
+def test_normalise_text_hand_computed() -> None:
+    values = pd.Series(
+        [
+            "Les Célébrités",
+            "212/484-5113",
+            "Utgoff, P. E., & Clouse, J. A.",
+            "TiVo HD Digital Video Recorder - Up to 20 Hours in HD! - TCD652160",
+            "Straße_ﬁve",
+            "  ...  ",
+            None,
+        ]
+    )
+    out = dataset.normalise_text(values)
+    assert out.iloc[:5].tolist() == [
+        "les celebrites",
+        "212 484 5113",
+        "utgoff p e clouse j a",
+        "tivo hd digital video recorder up to 20 hours in hd tcd652160",
+        "strasse five",
+    ]
+    assert out.iloc[5:].isna().all()
+
+
+def test_normalise_text_makes_the_sample_duplicates_equal() -> None:
+    # Two spellings of the same Cora author list differ only in form.
+    out = dataset.normalise_text(
+        pd.Series(["Utgoff, P.E. and Clouse J.A.", "UTGOFF P E AND CLOUSE J A"])
+    )
+    assert out.iloc[0] == out.iloc[1] == "utgoff p e and clouse j a"
+
+
+def test_normalise_digits() -> None:
+    out = dataset.normalise_digits(pd.Series(["212/484-5113", "(212) 484 5113", "n/a", None]))
+    assert out.iloc[:2].tolist() == ["2124845113", "2124845113"]
+    assert out.iloc[2:].isna().all()
+
+
+def test_normalise_records_applies_digits_fields_and_keeps_ids() -> None:
+    records = pd.DataFrame(
+        {"record_id": ["r0"], "source": ["Zagat"], "name": ["Café X"], "phone": ["212/484-5113"]}
+    )
+    out = dataset.normalise_records(records, digits_fields=["phone"])
+    assert out.iloc[0].tolist() == ["r0", "Zagat", "cafe x", "2124845113"]
+    assert records.loc[0, "name"] == "Café X"
+
+
+def test_record_texts_joins_fields_and_skips_nulls() -> None:
+    records = pd.DataFrame({"record_id": ["r0", "r1"], "a": ["x", None], "b": [" y ", "z"]})
+    texts = dataset.record_texts(records, ["a", "b"])
+    assert texts.to_dict() == {"r0": "x y", "r1": "z"}
+
+
+def test_file_sha256_of_abc(tmp_path: Path) -> None:
+    (tmp_path / "abc.txt").write_bytes(b"abc")
+    expected = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    assert dataset.file_sha256(tmp_path / "abc.txt") == expected
+
+
+def test_find_raw_file_prefers_the_plain_file_then_the_zip(tmp_path: Path) -> None:
+    (tmp_path / "a.csv.zip").write_bytes(b"zip")
+    assert dataset.find_raw_file(tmp_path, "a.csv").name == "a.csv.zip"
+    (tmp_path / "a.csv").write_bytes(b"plain")
+    assert dataset.find_raw_file(tmp_path, "a.csv").name == "a.csv"
+    with pytest.raises(FileNotFoundError, match="run the download"):
+        dataset.find_raw_file(tmp_path, "b.csv")
+
+
+def test_verify_manifest_detects_changed_and_missing_files(tmp_path: Path) -> None:
+    with pytest.raises(FileNotFoundError, match="manifest"):
+        dataset.verify_manifest(tmp_path)
+    (tmp_path / "a.csv").write_bytes(b"abc")
+    manifest = [{"file": "a.csv", "sha256": dataset.file_sha256(tmp_path / "a.csv")}]
+    (tmp_path / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    dataset.verify_manifest(tmp_path)
+    (tmp_path / "a.csv").write_bytes(b"abd")
+    with pytest.raises(ValueError, match="changed"):
+        dataset.verify_manifest(tmp_path)
+
+
+def test_fetch_copies_package_files_and_downloads_urls(tmp_path: Path) -> None:
+    package_file = dataset.RawFile("config.py", package_path="dedup_bench:config.py")
+    copied = dataset.fetch(package_file, tmp_path)
+    assert copied.read_bytes() == (Path(dataset.__file__).parent / "config.py").read_bytes()
+
+    (tmp_path / "source.txt").write_bytes(b"hello")
+    url_file = dataset.RawFile("downloaded.txt", url=(tmp_path / "source.txt").as_uri())
+    assert dataset.fetch(url_file, tmp_path).read_bytes() == b"hello"
+
+    with pytest.raises(ValueError, match="no source"):
+        dataset.fetch(dataset.RawFile("nothing.txt"), tmp_path)
+
+
+def test_selected_validates_names() -> None:
+    assert dataset.selected(None) == list(dataset.DATASETS)
+    assert dataset.selected(["cora", "febrl3"]) == ["febrl3", "cora"]
+    with pytest.raises(typer.BadParameter, match="unknown"):
+        dataset.selected(["nope"])
+
+
+def test_prepare_dataset_writes_original_normalised_and_truth(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    raw_dir = tmp_path / "raw" / "demo"
+    raw_dir.mkdir(parents=True)
+    (raw_dir / "demo.csv").write_text(
+        "id,name,phone\n1,Café,212-484\n2,CAFE,212 484\n3,Bar,\n", encoding="utf-8"
+    )
+    manifest = [{"file": "demo.csv", "sha256": dataset.file_sha256(raw_dir / "demo.csv")}]
+    (raw_dir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    config = tmp_path / "datasets.json"
+    config.write_text(json.dumps({"demo": {"text_fields": ["name"], "digits_fields": ["phone"]}}))
+
+    def prepare_demo(raw: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
+        df = pd.read_csv(raw / "demo.csv", dtype=str).rename(columns={"id": "record_id"})
+        return dataset.finish(df, pd.Series(["a", "a", "b"]), "demo")
+
+    demo = dataset.Dataset((dataset.RawFile("demo.csv"),), prepare_demo, 3, 2)
+    monkeypatch.setitem(dataset.DATASETS, "demo", demo)
+    monkeypatch.setattr(dataset, "RAW_DATA_DIR", tmp_path / "raw")
+    monkeypatch.setattr(dataset, "PROCESSED_DATA_DIR", tmp_path / "processed")
+    monkeypatch.setattr(dataset, "DATASETS_CONFIG", config)
+    dataset.prepare_dataset("demo")
+
+    original, truth = dataset.load_prepared("demo")
+    normalised, _ = dataset.load_prepared("demo", normalised=True)
+    assert set(original["name"]) == {"Café", "CAFE", "Bar"}
+    assert set(normalised["name"]) == {"cafe", "bar"}
+    assert set(normalised["phone"].dropna()) == {"212484"}
+    assert normalised["record_id"].tolist() == original["record_id"].tolist()
+    assert truth.groupby(truth).size().sort_values().tolist() == [1, 2]
+
+    monkeypatch.setitem(dataset.DATASETS, "demo", dataset.Dataset(demo.files, prepare_demo, 4, 2))
+    with pytest.raises(ValueError, match="expected 4"):
+        dataset.prepare_dataset("demo")
+
+
+@pytest.mark.parametrize("name", list(dataset.DATASETS))
+def test_prepared_normalised_records_match_the_originals(name: str) -> None:
+    out_dir = PROCESSED_DATA_DIR / name
+    if not (out_dir / "records_normalised.parquet").exists():
+        pytest.skip(f"{name} not prepared; run make data")
+    original = pd.read_parquet(out_dir / "records.parquet")
+    normalised = pd.read_parquet(out_dir / "records_normalised.parquet")
+    assert normalised.columns.tolist() == original.columns.tolist()
+    assert normalised["record_id"].equals(original["record_id"])

@@ -15,6 +15,9 @@ their SHA-256 checksums in ``data/raw/<dataset>/``, and two Parquet files in
 - ``records.parquet``: ``record_id``, ``source`` and the dataset's text fields
   (missing values are null), in shuffled order with neutral IDs so that
   neither IDs nor row order reveal the entities
+- ``records_normalised.parquet``: the same records with every text field
+  normalised (``normalise_text``, or ``normalise_digits`` for the fields
+  listed in ``configs/datasets.json``); the benchmark's methods read this
 - ``truth.parquet``: ``record_id``, ``original_id`` (the ID in the raw file)
   and ``entity_id``, the true entity of every record; methods never read it
 
@@ -32,7 +35,7 @@ import io
 import json
 from pathlib import Path
 import shutil
-from typing import Annotated
+from typing import Annotated, Any
 import urllib.request
 import zipfile
 
@@ -43,7 +46,7 @@ from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import connected_components
 import typer
 
-from dedup_bench.config import PROCESSED_DATA_DIR, RAW_DATA_DIR
+from dedup_bench.config import DATASETS_CONFIG, PROCESSED_DATA_DIR, RAW_DATA_DIR
 
 app = typer.Typer()
 
@@ -765,15 +768,123 @@ def prepare_dataset(name: str) -> tuple[pd.DataFrame, pd.DataFrame]:
             f"expected {dataset.n_records} / {dataset.n_entities}"
         )
 
+    digits_fields = load_datasets_config().get(name, {}).get("digits_fields", [])
     out_dir = PROCESSED_DATA_DIR / name
     out_dir.mkdir(parents=True, exist_ok=True)
     records.to_parquet(out_dir / "records.parquet", index=False)
+    normalise_records(records, digits_fields).to_parquet(
+        out_dir / "records_normalised.parquet", index=False
+    )
     truth.to_parquet(out_dir / "truth.parquet", index=False)
     logger.success(f"{name}: {n_records:,} records, {n_entities:,} entities")
     return records, truth
 
 
-def load_prepared(name: str) -> tuple[pd.DataFrame, pd.Series]:
+def load_datasets_config() -> dict[str, Any]:
+    """
+    Read ``configs/datasets.json``.
+
+    Returns
+    -------
+    dict
+        Per dataset, its text fields and normalisation settings.
+
+    Notes
+    -----
+    Processing:
+    1. Load the JSON file.
+    """
+    return json.loads(DATASETS_CONFIG.read_text(encoding="utf-8"))
+
+
+def normalise_text(values: pd.Series) -> pd.Series:
+    """
+    Light, method-independent text normalisation for entity resolution.
+
+    Removes differences of form that never tell two entities apart (accents,
+    case, punctuation, spacing) and keeps everything that might (words,
+    digits, model codes). Deliberately no stemming, stopword removal or
+    spelling correction: they change names and codes, and typos are signal.
+
+    Parameters
+    ----------
+    values : pd.Series of str, shape (n,)
+        Text values; nulls allowed.
+
+    Returns
+    -------
+    pd.Series of str, shape (n,)
+        Normalised text; null where the input is null or nothing is left.
+
+    Notes
+    -----
+    Processing:
+    1. Decompose with Unicode NFKD (``é`` becomes ``e`` plus an accent, ``ﬁ``
+       becomes ``fi``) and drop the combining accents.
+    2. Case-fold (a stronger lowercase: ``ß`` becomes ``ss``).
+    3. Replace every run of characters that are not letters or digits
+       (punctuation, underscores, spaces) with one space, and trim.
+    """
+    text = values.astype("string").str.normalize("NFKD")
+    text = text.str.replace(r"[̀-ͯ]", "", regex=True).str.casefold()
+    text = text.str.replace(r"[\W_]+", " ", regex=True).str.strip()
+    return text.mask(text == "")
+
+
+def normalise_digits(values: pd.Series) -> pd.Series:
+    """
+    Keep only the digits, for fields such as phone numbers.
+
+    Parameters
+    ----------
+    values : pd.Series of str, shape (n,)
+        Values; nulls allowed.
+
+    Returns
+    -------
+    pd.Series of str, shape (n,)
+        The digits of each value; null where there are none.
+
+    Notes
+    -----
+    Processing:
+    1. Delete every character that is not a digit.
+    """
+    digits = values.astype("string").str.replace(r"\D+", "", regex=True)
+    return digits.mask(digits == "")
+
+
+def normalise_records(records: pd.DataFrame, digits_fields: list[str]) -> pd.DataFrame:
+    """
+    Normalise every text field of a prepared dataset.
+
+    Parameters
+    ----------
+    records : pd.DataFrame, shape (n_records, n_columns)
+        Prepared records: ``record_id``, ``source`` and text fields.
+    digits_fields : list of str
+        Fields reduced to their digits; every other field gets
+        ``normalise_text``.
+
+    Returns
+    -------
+    pd.DataFrame, same shape
+        The records with normalised fields; ``record_id`` and ``source`` are
+        unchanged.
+
+    Notes
+    -----
+    Processing:
+    1. Apply ``normalise_digits`` or ``normalise_text`` to each field.
+    """
+    out = records.copy()
+    for field in out.columns.drop(["record_id", "source"]):
+        normalise = normalise_digits if field in digits_fields else normalise_text
+        out[field] = normalise(out[field])
+    return out
+
+
+def load_prepared(name: str, normalised: bool = False) -> tuple[pd.DataFrame, pd.Series]:
     """
     Read a prepared dataset.
 
@@ -781,20 +892,24 @@ def load_prepared(name: str) -> tuple[pd.DataFrame, pd.Series]:
     ----------
     name : str
         Key of ``DATASETS``.
+    normalised : bool, default False
+        Read ``records_normalised.parquet`` (what the benchmark's methods
+        use) instead of the original text in ``records.parquet``.
 
     Returns
     -------
     records : pd.DataFrame, shape (n_records, n_columns)
-        ``records.parquet`` as written by ``prepare_dataset``.
+        The records as written by ``prepare_dataset``.
     truth : pd.Series of str, shape (n_records,)
         True entity of every record, indexed by record ID.
 
     Notes
     -----
     Processing:
-    1. Read both Parquet files and index the entity IDs by record ID.
+    1. Read the records and truth files and index the entity IDs by record ID.
     """
-    records = pd.read_parquet(PROCESSED_DATA_DIR / name / "records.parquet")
+    file_name = "records_normalised.parquet" if normalised else "records.parquet"
+    records = pd.read_parquet(PROCESSED_DATA_DIR / name / file_name)
     truth = pd.read_parquet(PROCESSED_DATA_DIR / name / "truth.parquet")
     return records, pd.Series(truth["entity_id"].to_numpy(), index=truth["record_id"].to_numpy())
 

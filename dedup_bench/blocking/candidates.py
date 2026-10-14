@@ -1,7 +1,7 @@
 """
 Build the frozen candidate sets that every method of the benchmark compares.
 
-Input: prepared datasets (``make data``), their text fields from
+Input: normalised prepared datasets (``make data``), their text fields from
 ``configs/datasets.json``, the datasets, seeds and split shares from
 ``configs/experiment.json``, and the ``blocking.tfidf_knn`` settings from
 ``configs/models.json``.
@@ -29,8 +29,8 @@ import pandas as pd
 import typer
 
 from dedup_bench.blocking.tfidf_knn import nearest_neighbours, neighbour_pairs
-from dedup_bench.config import DATASETS_CONFIG, INTERIM_DATA_DIR, MODELS_CONFIG
-from dedup_bench.dataset import load_prepared, record_texts
+from dedup_bench.config import INTERIM_DATA_DIR, MODELS_CONFIG
+from dedup_bench.dataset import load_datasets_config, load_prepared, record_texts
 from dedup_bench.evaluation.metrics import blocking_scores
 from dedup_bench.splits import SPLITS, entity_split, load_experiment
 from dedup_bench.tuning import candidates, parse_space
@@ -81,7 +81,8 @@ def build_candidates(dataset: str, seed: int) -> dict[str, Any]:
     Notes
     -----
     Processing:
-    1. Load the records, join their text fields and split them by entity.
+    1. Load the normalised records, join their text fields and split them by
+       entity.
     2. Find every record's nearest neighbours within its own split, once, for
        the largest ``top_k``.
     3. Score each ``top_k`` on validation, from smallest to largest, and keep
@@ -89,7 +90,7 @@ def build_candidates(dataset: str, seed: int) -> dict[str, Any]:
     4. Write each split's pairs at that ``top_k`` with record IDs, and the
        scores.
     """
-    fields = json.loads(DATASETS_CONFIG.read_text(encoding="utf-8"))[dataset]["text_fields"]
+    fields = load_datasets_config()[dataset]["text_fields"]
     # top_k is in tuning.json's not_tuned (load_space refuses it): it is chosen here.
     models = json.loads(MODELS_CONFIG.read_text(encoding="utf-8"))
     space = parse_space(models["blocking"]["tfidf_knn"])
@@ -97,7 +98,7 @@ def build_candidates(dataset: str, seed: int) -> dict[str, Any]:
     top_ks = sorted(candidates(space["top_k"]))
     target = settings.pop("target_reachable_pair_completeness")
 
-    records, truth = load_prepared(dataset)
+    records, truth = load_prepared(dataset, normalised=True)
     texts = record_texts(records, fields)
     split = entity_split(truth, seed, load_experiment()["split"])
 

@@ -31,6 +31,11 @@ each one in `data/processed/<dataset>/`: `records.parquet` (shuffled records wit
 IDs) and `truth.parquet` (the true entity of every record). The Kaggle downloads need a
 Kaggle API token in the `KAGGLE_API_TOKEN` environment variable.
 
+`records_normalised.parquet` holds the same records with light, shared normalisation: accents
+stripped, case-folded, punctuation and spacing collapsed, and phone numbers reduced to digits.
+No stemming, stopword removal or spelling correction, since names, model codes and typos are
+what tells entities apart. Every method of the benchmark reads this file.
+
 | Dataset | Domain | Source | Records | Entities | Card |
 |---|---|---|---:|---:|---|
 | Febrl 3 | synthetic people | `recordlinkage` package | 5,000 | 2,000 | [febrl3](references/febrl3.md) |

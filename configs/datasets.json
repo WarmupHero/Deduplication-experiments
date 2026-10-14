@@ -1,5 +1,5 @@
 {
-  "description": "How the benchmark reads each prepared dataset (data/processed/<dataset>/records.parquet). text_fields are joined, in order and skipping nulls, into one text per record for TF-IDF blocking. Cora's fields are often misassigned by its parser, so all of them are used. Field lists for the field-by-field methods are added with those methods.",
+  "description": "How the benchmark reads each prepared dataset (data/processed/<dataset>/records.parquet). Every text field is normalised once by make data (accents, case, punctuation and spacing; see dataset.normalise_text), except digits_fields, which keep only their digits; methods read the normalised records. text_fields are joined, in order and skipping nulls, into one text per record for TF-IDF blocking. Cora's fields are often misassigned by its parser, so all of them are used. Field lists for the field-by-field methods are added with those methods.",
   "febrl3": {
     "text_fields": [
       "given_name",
@@ -15,7 +15,8 @@
     ]
   },
   "restaurants": {
-    "text_fields": ["name", "address", "city", "phone", "category"]
+    "text_fields": ["name", "address", "city", "phone", "category"],
+    "digits_fields": ["phone"]
   },
   "pricerunner": {
     "text_fields": ["title"]
