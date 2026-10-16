@@ -1,0 +1,443 @@
+{
+  "dataset": "abt_buy",
+  "method": "embedding_clustering.agglomerative",
+  "seed": 3,
+  "top_k": 10,
+  "objective": "b_cubed_f1",
+  "strategy": "optuna",
+  "best_params": {
+    "model_name": "minishlab/potion-base-8M",
+    "batch_size": 256,
+    "linkage": "complete",
+    "distance_threshold": 0.25
+  },
+  "validation_score": 0.8478303950823823,
+  "test": {
+    "pairwise_precision": 0.5050847457627119,
+    "pairwise_recall": 0.6772727272727272,
+    "pairwise_f1": 0.5786407766990291,
+    "b_cubed_precision": 0.8388248847926266,
+    "b_cubed_recall": 0.8394777265745007,
+    "b_cubed_f1": 0.8391511787093251,
+    "cluster_precision": 0.4892703862660944,
+    "cluster_recall": 0.5277777777777778,
+    "cluster_f1": 0.5077951002227171,
+    "ari": 0.5775074924707495,
+    "n_clusters": 233,
+    "n_entities": 216
+  },
+  "seconds_total": 8.691529300000184,
+  "seconds_test": 0.4076335999998264,
+  "peak_mb": 621,
+  "trials": [
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.15
+      },
+      "score": 0.7837998262973086,
+      "seconds": 0.3798058000002129
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.5
+      },
+      "score": 0.6906837407541012,
+      "seconds": 3.992641900000308
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.15
+      },
+      "score": 0.7837998262973086,
+      "seconds": 0.11886189999950147
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.25
+      },
+      "score": 0.8312874842563365,
+      "seconds": 0.13514390000000276
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.35
+      },
+      "score": 0.8190940174760319,
+      "seconds": 0.11149550000027375
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.05
+      },
+      "score": 0.6883993511590184,
+      "seconds": 0.045618900000590656
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.7
+      },
+      "score": 0.6715058482418778,
+      "seconds": 0.023164899999756017
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.35
+      },
+      "score": 0.8190940174760319,
+      "seconds": 0.12024050000036368
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.2
+      },
+      "score": 0.827721062656345,
+      "seconds": 0.12178670000048442
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.15
+      },
+      "score": 0.7854189914448162,
+      "seconds": 0.12074930000017048
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.6
+      },
+      "score": 0.6266455337223299,
+      "seconds": 0.022420799999963492
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.35
+      },
+      "score": 0.83918018361777,
+      "seconds": 0.1047656000000643
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.35
+      },
+      "score": 0.810826688275295,
+      "seconds": 0.10811770000054821
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.45
+      },
+      "score": 0.7922177951254509,
+      "seconds": 0.06661810000059631
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.05
+      },
+      "score": 0.6878384515948713,
+      "seconds": 0.039680300000327406
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.3
+      },
+      "score": 0.8466443566203855,
+      "seconds": 0.12492930000007618
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.3
+      },
+      "score": 0.8466443566203855,
+      "seconds": 0.12685959999998886
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.05
+      },
+      "score": 0.7000929469971192,
+      "seconds": 0.04624919999969279
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.7
+      },
+      "score": 0.6753690439565012,
+      "seconds": 0.026515200000176264
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.55
+      },
+      "score": 0.7406250011297465,
+      "seconds": 0.03665580000051705
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.25
+      },
+      "score": 0.8478303950823823,
+      "seconds": 0.12959760000012466
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.25
+      },
+      "score": 0.8478303950823823,
+      "seconds": 0.13219049999952404
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.25
+      },
+      "score": 0.8478303950823823,
+      "seconds": 0.12771429999975226
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.15
+      },
+      "score": 0.7847741872193102,
+      "seconds": 0.10872449999988021
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.45
+      },
+      "score": 0.7922177951254509,
+      "seconds": 0.06720700000005309
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.25
+      },
+      "score": 0.8227734148752459,
+      "seconds": 0.13958120000006602
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.25
+      },
+      "score": 0.8236820424152311,
+      "seconds": 0.15866899999946327
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.25
+      },
+      "score": 0.8478303950823823,
+      "seconds": 0.17946809999921243
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.1
+      },
+      "score": 0.750531063582133,
+      "seconds": 0.09287120000044524
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.2
+      },
+      "score": 0.827721062656345,
+      "seconds": 0.1259909999998854
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.7
+      },
+      "score": 0.564594488240907,
+      "seconds": 0.021945200000118348
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.25
+      },
+      "score": 0.8478303950823823,
+      "seconds": 0.15226780000011786
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.35
+      },
+      "score": 0.788504600240682,
+      "seconds": 0.1267918000003192
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.05
+      },
+      "score": 0.7000929469971192,
+      "seconds": 0.05007079999995767
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.3
+      },
+      "score": 0.8466443566203855,
+      "seconds": 0.1413436000002548
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.35
+      },
+      "score": 0.83918018361777,
+      "seconds": 0.11020900000039546
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.45
+      },
+      "score": 0.7708737767407745,
+      "seconds": 0.07823680000001332
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.2
+      },
+      "score": 0.8211439766348961,
+      "seconds": 0.14079930000025342
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.15
+      },
+      "score": 0.782480982266358,
+      "seconds": 0.12256350000006933
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.4
+      },
+      "score": 0.8161825135428076,
+      "seconds": 0.11086479999994481
+    }
+  ],
+  "git_commit": "d5177818029f8055c84d510ce1eeca62173b9af5",
+  "git_dirty": false,
+  "config_sha256": {
+    "datasets.json": "e7a97477c5edf771f8da03e3bbb63f13fa73cfd275145cba658b545030cb34c7",
+    "datasets_smoke.json": "6b8692a91f62f450dc082d80aa9ed1bfaebcc108738028125e0fb6248dd7eee5",
+    "experiment.json": "c8c1926eed76de096ba708a9798ca261bf514a680d7b32ac221692b006c50856",
+    "models.json": "7aca7ad2066bcaee2bfc0b9079f66194cfbc9f73609d0a65946099ebf98e1e4e",
+    "tuning.json": "050715af58d6de84e9ae42ac63cb2b385f3954b374bfa3b9acf0adb2056450c5"
+  }
+}

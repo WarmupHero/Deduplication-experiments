@@ -1,0 +1,443 @@
+{
+  "dataset": "cora",
+  "method": "embedding_clustering.agglomerative",
+  "seed": 4,
+  "top_k": 25,
+  "objective": "b_cubed_f1",
+  "strategy": "optuna",
+  "best_params": {
+    "model_name": "minishlab/potion-base-8M",
+    "batch_size": 256,
+    "linkage": "average",
+    "distance_threshold": 0.35
+  },
+  "validation_score": 0.7811348611533174,
+  "test": {
+    "pairwise_precision": 0.9907997169143666,
+    "pairwise_recall": 0.746268656716418,
+    "pairwise_f1": 0.8513225904530254,
+    "b_cubed_precision": 0.9764557633638413,
+    "b_cubed_recall": 0.8445931970450571,
+    "b_cubed_f1": 0.9057503811071159,
+    "cluster_precision": 0.7407407407407407,
+    "cluster_recall": 0.7843137254901961,
+    "cluster_f1": 0.7619047619047618,
+    "ari": 0.8434698425355471,
+    "n_clusters": 54,
+    "n_entities": 51
+  },
+  "seconds_total": 5.689457200000106,
+  "seconds_test": 0.3096196000005875,
+  "peak_mb": 944,
+  "trials": [
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.15
+      },
+      "score": 0.678118446908516,
+      "seconds": 0.32361020000007557
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.5
+      },
+      "score": 0.770807979721793,
+      "seconds": 2.8673279000004186
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.15
+      },
+      "score": 0.678118446908516,
+      "seconds": 0.08593400000063411
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.25
+      },
+      "score": 0.7463763916704068,
+      "seconds": 0.06974580000041897
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.35
+      },
+      "score": 0.6840945656705941,
+      "seconds": 0.06673060000048281
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.05
+      },
+      "score": 0.5727044764524157,
+      "seconds": 0.09220569999979489
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.7
+      },
+      "score": 0.6685571683492805,
+      "seconds": 0.034125500000300235
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.35
+      },
+      "score": 0.6840945656705941,
+      "seconds": 0.06375570000000153
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.2
+      },
+      "score": 0.6375103588187866,
+      "seconds": 0.07228180000038265
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.15
+      },
+      "score": 0.6565314811242203,
+      "seconds": 0.08684879999964323
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.65
+      },
+      "score": 0.7416260649976947,
+      "seconds": 0.04256299999997282
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.5
+      },
+      "score": 0.7625449239884199,
+      "seconds": 0.03473779999967519
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.55
+      },
+      "score": 0.7421501581101765,
+      "seconds": 0.02981920000001992
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.4
+      },
+      "score": 0.776602605109007,
+      "seconds": 0.057493199999953504
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.4
+      },
+      "score": 0.776602605109007,
+      "seconds": 0.055146299999250914
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.35
+      },
+      "score": 0.7698238624773134,
+      "seconds": 0.0608382000000347
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.25
+      },
+      "score": 0.7275539430722531,
+      "seconds": 0.06936709999990853
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.4
+      },
+      "score": 0.776602605109007,
+      "seconds": 0.051569799999924726
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.05
+      },
+      "score": 0.6204324125768252,
+      "seconds": 0.08379340000010416
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.25
+      },
+      "score": 0.7275539430722531,
+      "seconds": 0.06189760000052047
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.5
+      },
+      "score": 0.6888883163569726,
+      "seconds": 0.05119379999996454
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.4
+      },
+      "score": 0.776602605109007,
+      "seconds": 0.05438320000030217
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.35
+      },
+      "score": 0.7698238624773134,
+      "seconds": 0.06190920000062761
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.45
+      },
+      "score": 0.7779322880730624,
+      "seconds": 0.04674230000000534
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.4
+      },
+      "score": 0.6947867720804213,
+      "seconds": 0.051657900000464
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.5
+      },
+      "score": 0.770807979721793,
+      "seconds": 0.043075300000054995
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.55
+      },
+      "score": 0.7567599548245002,
+      "seconds": 0.0451322999997501
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.7
+      },
+      "score": 0.6727533270762793,
+      "seconds": 0.029094900000018242
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.35
+      },
+      "score": 0.7811348611533174,
+      "seconds": 0.048686199999792734
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.55
+      },
+      "score": 0.6856426709267752,
+      "seconds": 0.03563090000079683
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.4
+      },
+      "score": 0.780468927594211,
+      "seconds": 0.04458299999987503
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.4
+      },
+      "score": 0.780468927594211,
+      "seconds": 0.05028820000006817
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.4
+      },
+      "score": 0.780468927594211,
+      "seconds": 0.04241189999993367
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.35
+      },
+      "score": 0.7811348611533174,
+      "seconds": 0.046949900000072375
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.3
+      },
+      "score": 0.765290708071832,
+      "seconds": 0.05680870000014693
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.45
+      },
+      "score": 0.7712719007440827,
+      "seconds": 0.03973339999993186
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.3
+      },
+      "score": 0.765290708071832,
+      "seconds": 0.05829509999966831
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "complete",
+        "distance_threshold": 0.3
+      },
+      "score": 0.7031792602040176,
+      "seconds": 0.05426460000035149
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.15
+      },
+      "score": 0.678118446908516,
+      "seconds": 0.06774790000054054
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "linkage": "average",
+        "distance_threshold": 0.4
+      },
+      "score": 0.780468927594211,
+      "seconds": 0.04887140000028012
+    }
+  ],
+  "git_commit": "d5177818029f8055c84d510ce1eeca62173b9af5",
+  "git_dirty": false,
+  "config_sha256": {
+    "datasets.json": "e7a97477c5edf771f8da03e3bbb63f13fa73cfd275145cba658b545030cb34c7",
+    "datasets_smoke.json": "6b8692a91f62f450dc082d80aa9ed1bfaebcc108738028125e0fb6248dd7eee5",
+    "experiment.json": "c8c1926eed76de096ba708a9798ca261bf514a680d7b32ac221692b006c50856",
+    "models.json": "7aca7ad2066bcaee2bfc0b9079f66194cfbc9f73609d0a65946099ebf98e1e4e",
+    "tuning.json": "050715af58d6de84e9ae42ac63cb2b385f3954b374bfa3b9acf0adb2056450c5"
+  }
+}

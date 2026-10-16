@@ -1,0 +1,525 @@
+{
+  "dataset": "abt_buy",
+  "method": "embedding_clustering.hdbscan",
+  "seed": 1,
+  "top_k": 10,
+  "objective": "b_cubed_f1",
+  "strategy": "optuna",
+  "best_params": {
+    "model_name": "minishlab/potion-base-8M",
+    "batch_size": 256,
+    "min_cluster_size": 2,
+    "min_samples": 1,
+    "cluster_selection_method": "leaf",
+    "cluster_selection_epsilon": 0.0
+  },
+  "validation_score": 0.868589953345265,
+  "test": {
+    "pairwise_precision": 0.610223642172524,
+    "pairwise_recall": 0.8488888888888889,
+    "pairwise_f1": 0.7100371747211897,
+    "b_cubed_precision": 0.8453639846743295,
+    "b_cubed_recall": 0.924904214559387,
+    "b_cubed_f1": 0.8833471816309547,
+    "cluster_precision": 0.7014925373134329,
+    "cluster_recall": 0.6558139534883721,
+    "cluster_f1": 0.6778846153846154,
+    "ari": 0.7092307309542794,
+    "n_clusters": 201,
+    "n_entities": 215
+  },
+  "seconds_total": 6.756882900000164,
+  "seconds_test": 0.32299250000005486,
+  "peak_mb": 678,
+  "trials": [
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.5
+      },
+      "score": 0.2243683851716889,
+      "seconds": 0.29346850000001723
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.1
+      },
+      "score": 0.8346940470241367,
+      "seconds": 5.001098899999761
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.45
+      },
+      "score": 0.32007673010336857,
+      "seconds": 0.03490669999973761
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.7
+      },
+      "score": 0.02283093320578061,
+      "seconds": 0.02931140000009691
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.1
+      },
+      "score": 0.8346940470241367,
+      "seconds": 0.028985500000089814
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.35
+      },
+      "score": 0.6090650876908316,
+      "seconds": 0.030520199999955366
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.45
+      },
+      "score": 0.37772237305547895,
+      "seconds": 0.03662919999987935
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.25
+      },
+      "score": 0.7819134923995416,
+      "seconds": 0.025330599999961123
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.1
+      },
+      "score": 0.8559912978665696,
+      "seconds": 0.023145199999817123
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.0
+      },
+      "score": 0.868589953345265,
+      "seconds": 0.02228270000023258
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.7
+      },
+      "score": 0.018327678599739983,
+      "seconds": 0.030383199999960198
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.0
+      },
+      "score": 0.868589953345265,
+      "seconds": 0.022365000000263535
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.0
+      },
+      "score": 0.868589953345265,
+      "seconds": 0.02319969999962268
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.0
+      },
+      "score": 0.868589953345265,
+      "seconds": 0.028083499999866035
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.15
+      },
+      "score": 0.8472439179627813,
+      "seconds": 0.029934900000171183
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.0
+      },
+      "score": 0.8433911431176307,
+      "seconds": 0.024359200000162673
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.3
+      },
+      "score": 0.703939108685313,
+      "seconds": 0.029016999999839754
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.2
+      },
+      "score": 0.8149737173185748,
+      "seconds": 0.025928100000328413
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.05
+      },
+      "score": 0.868589953345265,
+      "seconds": 0.029821300000094197
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.2
+      },
+      "score": 0.8086022075939371,
+      "seconds": 0.026224400000046444
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.1
+      },
+      "score": 0.8559912978665696,
+      "seconds": 0.024942900000041845
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.0
+      },
+      "score": 0.868589953345265,
+      "seconds": 0.02878690000034112
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.0
+      },
+      "score": 0.868589953345265,
+      "seconds": 0.02348009999968781
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.05
+      },
+      "score": 0.868589953345265,
+      "seconds": 0.02463239999997313
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.15
+      },
+      "score": 0.8472439179627813,
+      "seconds": 0.02638219999971625
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.6
+      },
+      "score": 0.11718139708401426,
+      "seconds": 0.026680300000407442
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.05
+      },
+      "score": 0.868589953345265,
+      "seconds": 0.023972499999672436
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.15
+      },
+      "score": 0.8472439179627813,
+      "seconds": 0.025857400000404596
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.0
+      },
+      "score": 0.868589953345265,
+      "seconds": 0.023150900000018737
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.1
+      },
+      "score": 0.8559912978665696,
+      "seconds": 0.025737600000411476
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.25
+      },
+      "score": 0.7819134923995416,
+      "seconds": 0.0334392999998272
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.0
+      },
+      "score": 0.868589953345265,
+      "seconds": 0.02459740000040256
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.05
+      },
+      "score": 0.868589953345265,
+      "seconds": 0.026557799999864073
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.05
+      },
+      "score": 0.8433911431176307,
+      "seconds": 0.032545999999911146
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.0
+      },
+      "score": 0.868589953345265,
+      "seconds": 0.022617199999785953
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.05
+      },
+      "score": 0.868589953345265,
+      "seconds": 0.024102700000184996
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.1
+      },
+      "score": 0.8559912978665696,
+      "seconds": 0.025920500000211177
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.15
+      },
+      "score": 0.8276109191537916,
+      "seconds": 0.03179709999994884
+    },
+    {
+      "params": {
+        "model_name": "minishlab/potion-base-8M",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.55
+      },
+      "score": 0.12121917385023086,
+      "seconds": 0.027473600000121223
+    },
+    {
+      "params": {
+        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "batch_size": 256,
+        "min_cluster_size": 2,
+        "min_samples": 1,
+        "cluster_selection_method": "leaf",
+        "cluster_selection_epsilon": 0.05
+      },
+      "score": 0.8433911431176307,
+      "seconds": 0.024788700000044628
+    }
+  ],
+  "git_commit": "d5177818029f8055c84d510ce1eeca62173b9af5",
+  "git_dirty": false,
+  "config_sha256": {
+    "datasets.json": "e7a97477c5edf771f8da03e3bbb63f13fa73cfd275145cba658b545030cb34c7",
+    "datasets_smoke.json": "6b8692a91f62f450dc082d80aa9ed1bfaebcc108738028125e0fb6248dd7eee5",
+    "experiment.json": "c8c1926eed76de096ba708a9798ca261bf514a680d7b32ac221692b006c50856",
+    "models.json": "7aca7ad2066bcaee2bfc0b9079f66194cfbc9f73609d0a65946099ebf98e1e4e",
+    "tuning.json": "050715af58d6de84e9ae42ac63cb2b385f3954b374bfa3b9acf0adb2056450c5"
+  }
+}
