@@ -32,7 +32,17 @@ def tiny_dataset(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> str:
         processed / "truth.parquet"
     )
     datasets_config = tmp_path / "datasets.json"
-    datasets_config.write_text(json.dumps({"tiny": {"text_fields": ["name"]}}))
+    datasets_config.write_text(
+        json.dumps(
+            {
+                "tiny": {
+                    "text_fields": ["name"],
+                    "match_fields": {"name": "jaro_winkler"},
+                    "em_blocking": [],
+                }
+            }
+        )
+    )
 
     monkeypatch.setattr("dedup_bench.dataset.PROCESSED_DATA_DIR", tmp_path / "processed")
     monkeypatch.setattr("dedup_bench.dataset.DATASETS_CONFIG", datasets_config)
@@ -174,3 +184,20 @@ def test_every_method_runs_through_the_runner(tiny_dataset: str, method: str) ->
     prediction = experiment.METHODS[method](splits["train"], target, setting, 0)
     assert prediction.clusters.index.equals(pd.Index(target.records["record_id"]))
     assert prediction.pairs.columns.tolist() == ["left_id", "right_id", "score"]
+
+
+def test_cluster_probabilities_cut_on_match_weight() -> None:
+    # Weights log2(p / (1 - p)): 0.8 -> 2, 0.5 -> 0, 0.2 -> -2, 1.0 -> about 49.8 (clipped).
+    records = pd.DataFrame({"record_id": ["a", "b", "c", "d", "e"]})
+    pairs = pd.DataFrame(
+        {"left_id": ["a", "b", "c", "d"], "right_id": ["b", "c", "d", "e"], "similarity": 0.0}
+    )
+    target = experiment.SplitData(records, pairs, pd.Series(dtype=str), None)
+    probability = [0.8, 0.5, 0.2, 1.0]
+    prediction = experiment.cluster_probabilities(target, probability, threshold=1.0)
+    clusters = prediction.clusters
+    assert clusters["a"] == clusters["b"] and clusters["d"] == clusters["e"]
+    assert clusters.nunique() == 3
+    assert prediction.pairs["score"].tolist() == probability
+    zero = experiment.cluster_probabilities(target, probability, threshold=0.0).clusters
+    assert zero["a"] == zero["c"] != zero["d"]

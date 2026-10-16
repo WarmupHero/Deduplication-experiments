@@ -1,5 +1,5 @@
 {
-  "description": "How the benchmark reads each prepared dataset (data/processed/<dataset>/records.parquet). Every text field is normalised once by make data (accents, case, punctuation and spacing; see dataset.normalise_text), except digits_fields, which keep only their digits; methods read the normalised records. text_fields are joined, in order and skipping nulls, into one text per record for TF-IDF blocking. Cora's fields are often misassigned by its parser, so all of them are used. Field lists for the field-by-field methods are added with those methods.",
+  "description": "How the benchmark reads each prepared dataset (data/processed/<dataset>/records.parquet). Every text field is normalised once by make data (accents, case, punctuation and spacing; see dataset.normalise_text), except digits_fields, which keep only their digits; methods read the normalised records. text_fields are joined, in order and skipping nulls, into one text per record for TF-IDF blocking. Cora's fields are often misassigned by its parser, so all of them are used. match_fields are the fields the field-by-field (probabilistic) methods compare, each with how: jaro_winkler or levenshtein (string similarity levels) or exact. em_blocking are the rules Splink uses to train its match model with EM: a field (or SQL expression) records must share; EM cannot learn the weight of a field it blocks on, so the rules block on different fields; one-field datasets have none and keep Splink's default weights per similarity level. Title-only datasets run as-is (user's choice, 2026-10-16): the models then reduce to a similarity threshold on the title.",
   "febrl3": {
     "text_fields": [
       "given_name",
@@ -12,20 +12,45 @@
       "state",
       "date_of_birth",
       "soc_sec_id"
-    ]
+    ],
+    "match_fields": {
+      "given_name": "jaro_winkler",
+      "surname": "jaro_winkler",
+      "street_number": "exact",
+      "address_1": "jaro_winkler",
+      "address_2": "jaro_winkler",
+      "suburb": "jaro_winkler",
+      "postcode": "exact",
+      "state": "exact",
+      "date_of_birth": "levenshtein",
+      "soc_sec_id": "levenshtein"
+    },
+    "em_blocking": ["date_of_birth", "surname", "postcode"]
   },
   "restaurants": {
     "text_fields": ["name", "address", "city", "phone", "category"],
-    "digits_fields": ["phone"]
+    "digits_fields": ["phone"],
+    "match_fields": {
+      "name": "jaro_winkler",
+      "address": "jaro_winkler",
+      "city": "exact",
+      "phone": "exact",
+      "category": "jaro_winkler"
+    },
+    "em_blocking": ["city", "phone"]
   },
   "pricerunner": {
-    "text_fields": ["title"]
+    "text_fields": ["title"],
+    "match_fields": {"title": "jaro_winkler"},
+    "em_blocking": []
   },
   "skroutz": {
     "text_fields": ["title"]
   },
   "abt_buy": {
-    "text_fields": ["name"]
+    "text_fields": ["name"],
+    "match_fields": {"name": "jaro_winkler", "price": "exact"},
+    "em_blocking": ["substr(name, 1, 4)", "price"]
   },
   "cora": {
     "text_fields": [
@@ -45,6 +70,17 @@
       "tech",
       "type",
       "note"
-    ]
+    ],
+    "match_fields": {
+      "authors": "jaro_winkler",
+      "title": "jaro_winkler",
+      "booktitle": "jaro_winkler",
+      "journal": "jaro_winkler",
+      "year": "exact",
+      "volume": "jaro_winkler",
+      "pages": "jaro_winkler",
+      "publisher": "jaro_winkler"
+    },
+    "em_blocking": ["year", "substr(title, 1, 4)"]
   }
 }

@@ -34,6 +34,7 @@ import time
 from typing import Annotated, Any, Self
 
 from loguru import logger
+import numpy as np
 import pandas as pd
 import typer
 
@@ -49,6 +50,7 @@ from dedup_bench.evaluation.metrics import (
     cluster_scores,
     pairwise_scores,
 )
+from dedup_bench.probabilistic import ecm_scores, splink_scores
 from dedup_bench.splits import SPLITS, entity_split, load_experiment
 from dedup_bench.tuning import load_settings, load_space, tune
 
@@ -71,12 +73,15 @@ class SplitData:
         dataset's ``text_fields``), indexed by record ID.
     truth : pd.Series of str or None, shape (n_records,)
         True entity per record ID; None when the method must not see it.
+    dataset : str, default ""
+        Dataset name, for methods that read its entry in ``configs/datasets.json``.
     """
 
     records: pd.DataFrame
     pairs: pd.DataFrame
     texts: pd.Series
     truth: pd.Series | None
+    dataset: str = ""
 
 
 @dataclass
@@ -193,6 +198,112 @@ def run_embedding_clustering(
     return Prediction(clusters, pairs.rename(columns={"similarity": "score"}))
 
 
+# The probabilistic methods' cut on match weight (log2 odds), applied after scoring.
+MATCH_THRESHOLD = "match_weight_threshold"
+
+
+def cluster_probabilities(target: SplitData, probability: Any, threshold: float) -> Prediction:
+    """
+    Connected components of the candidate pairs at a match-weight threshold.
+
+    Parameters
+    ----------
+    target : SplitData
+        The split that was scored.
+    probability : np.ndarray of float, shape (n_pairs,)
+        Match probability of each of the target's candidate pairs.
+    threshold : float
+        Pairs whose match weight, log2(p / (1 - p)), is lower are dropped.
+
+    Returns
+    -------
+    Prediction
+        The clusters, and the pairs scored by their match probability.
+
+    Notes
+    -----
+    Processing:
+    1. Turn the probabilities into match weights, clipped so 0 and 1 stay finite.
+    2. Run ``graph.connected_components`` on the weights, Splink's own clustering.
+    """
+    p = np.clip(np.asarray(probability, dtype=float), 1e-15, 1 - 1e-15)
+    weighted = target.pairs.assign(similarity=np.log2(p) - np.log2(1 - p))
+    clusters = graph.connected_components(
+        pd.Index(target.records["record_id"]), weighted, threshold
+    )
+    return Prediction(clusters, target.pairs.assign(score=probability).drop(columns="similarity"))
+
+
+def run_splink(
+    train: SplitData, target: SplitData, params: dict[str, Any], seed: int
+) -> Prediction:
+    """
+    Splink trained on train's records without labels, scoring the target's pairs.
+
+    Parameters
+    ----------
+    train : SplitData
+        Records to train on; its truth is not used.
+    target : SplitData
+        The split to cluster.
+    params : dict
+        Splink settings plus ``match_probability_threshold``.
+    seed : int
+        Seed of Splink's u sampling.
+
+    Returns
+    -------
+    Prediction
+        The clusters, and the pairs scored by match probability.
+
+    Notes
+    -----
+    Processing:
+    1. Score the target's pairs with ``probabilistic.splink_scores``.
+    2. Cluster at the threshold with ``cluster_probabilities``.
+    """
+    settings = {name: value for name, value in params.items() if name != MATCH_THRESHOLD}
+    config = load_datasets_config()[target.dataset]
+    probability = splink_scores(
+        train.records, target.records, target.pairs, config, settings, seed
+    )
+    return cluster_probabilities(target, probability, params[MATCH_THRESHOLD])
+
+
+def run_ecm(train: SplitData, target: SplitData, params: dict[str, Any], seed: int) -> Prediction:
+    """
+    recordlinkage's ECM fitted on train's pairs without labels, scoring the target's pairs.
+
+    Parameters
+    ----------
+    train : SplitData
+        Pairs to fit on; its truth is not used.
+    target : SplitData
+        The split to cluster.
+    params : dict
+        ECM settings plus ``match_probability_threshold``.
+    seed : int
+        Unused; ECM is deterministic.
+
+    Returns
+    -------
+    Prediction
+        The clusters, and the pairs scored by match probability.
+
+    Notes
+    -----
+    Processing:
+    1. Score the target's pairs with ``probabilistic.ecm_scores``.
+    2. Cluster at the threshold with ``cluster_probabilities``.
+    """
+    settings = {name: value for name, value in params.items() if name != MATCH_THRESHOLD}
+    config = load_datasets_config()[target.dataset]
+    probability = ecm_scores(
+        train.records, train.pairs, target.records, target.pairs, config, settings
+    )
+    return cluster_probabilities(target, probability, params[MATCH_THRESHOLD])
+
+
 def run_exact_key(
     train: SplitData, target: SplitData, params: dict[str, Any], seed: int
 ) -> Prediction:
@@ -240,6 +351,8 @@ METHODS: dict[str, Method] = {
     "embedding_clustering.agglomerative": partial(
         run_embedding_clustering, embedding.agglomerative
     ),
+    "probabilistic.splink": run_splink,
+    "probabilistic.recordlinkage_ecm": run_ecm,
 }
 
 
@@ -285,6 +398,7 @@ def load_splits(dataset: str, seed: int) -> dict[str, SplitData]:
             pd.read_parquet(path),
             texts[ids],
             truth[ids],
+            dataset,
         )
     return splits
 
