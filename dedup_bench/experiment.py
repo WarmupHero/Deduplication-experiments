@@ -39,9 +39,10 @@ import typer
 
 from dedup_bench.baselines import equal_keys, exact_key, exact_keys
 from dedup_bench.blocking.candidates import candidates_dir
-from dedup_bench.clustering import graph
+from dedup_bench.clustering import embedding, graph
 from dedup_bench.config import CONFIGS_DIR, PROJ_ROOT, RESULTS_DIR
 from dedup_bench.dataset import load_datasets_config, load_prepared, record_texts
+from dedup_bench.embeddings import embedding_pairs
 from dedup_bench.evaluation.metrics import (
     adjusted_rand_index,
     b_cubed_scores,
@@ -145,6 +146,52 @@ def run_graph_clustering(
 
 run_connected_components = partial(run_graph_clustering, graph.connected_components)
 
+# Settings of the embedding methods that choose the encoder, not the clustering.
+ENCODER_SETTINGS = ("model_name", "batch_size")
+
+
+def run_embedding_clustering(
+    cluster: Callable[..., pd.Series],
+    train: SplitData,
+    target: SplitData,
+    params: dict[str, Any],
+    seed: int,
+) -> Prediction:
+    """
+    Cluster the candidate pairs re-scored by embedding similarity.
+
+    Parameters
+    ----------
+    cluster : callable
+        A function of ``clustering.embedding``, called with the record IDs,
+        the re-scored pairs and the clustering settings.
+    train : SplitData
+        Unused; the encoder is pretrained and nothing is learned.
+    target : SplitData
+        The split to cluster.
+    params : dict
+        The setting: ``ENCODER_SETTINGS`` choose the encoder, the rest go to
+        ``cluster`` by name.
+    seed : int
+        Unused; encoding and clustering are deterministic.
+
+    Returns
+    -------
+    Prediction
+        The clusters, and the pairs scored by embedding cosine similarity.
+
+    Notes
+    -----
+    Processing:
+    1. Re-score the target's candidate pairs with the chosen encoder.
+    2. Run ``cluster`` on them with the remaining settings.
+    """
+    encoder = {name: params[name] for name in ENCODER_SETTINGS}
+    settings = {name: value for name, value in params.items() if name not in ENCODER_SETTINGS}
+    pairs = embedding_pairs(target.texts, target.pairs, **encoder)
+    clusters = cluster(pd.Index(target.records["record_id"]), pairs, **settings)
+    return Prediction(clusters, pairs.rename(columns={"similarity": "score"}))
+
 
 def run_exact_key(
     train: SplitData, target: SplitData, params: dict[str, Any], seed: int
@@ -189,6 +236,10 @@ METHODS: dict[str, Method] = {
     "graph_clustering.markov": partial(run_graph_clustering, graph.markov),
     "graph_clustering.leiden_cpm": partial(run_graph_clustering, graph.leiden_cpm, seeded=True),
     "graph_clustering.hierarchical": partial(run_graph_clustering, graph.hierarchical),
+    "embedding_clustering.hdbscan": partial(run_embedding_clustering, embedding.hdbscan),
+    "embedding_clustering.agglomerative": partial(
+        run_embedding_clustering, embedding.agglomerative
+    ),
 }
 
 

@@ -42,6 +42,7 @@ import typer
 from dedup_bench.blocking.tfidf_knn import nearest_neighbours, neighbour_pairs
 from dedup_bench.config import DATASETS_SMOKE_CONFIG, MODELS_CONFIG
 from dedup_bench.dataset import load_prepared, record_texts
+from dedup_bench.embeddings import encode
 from dedup_bench.evaluation.metrics import pairwise_scores
 from dedup_bench.tuning import candidates, parse_space
 
@@ -301,46 +302,6 @@ def check_graph_clustering(
     }
 
 
-def encode(texts: pd.Series, model_name: str, batch_size: int) -> np.ndarray:
-    """
-    Embed texts with a model2vec or sentence-transformers model, L2-normalised.
-
-    Parameters
-    ----------
-    texts : pd.Series of str, shape (n_records,)
-        One text per record.
-    model_name : str
-        Hugging Face model ID; ``minishlab/`` models load with model2vec.
-    batch_size : int
-        Encoding batch size.
-
-    Returns
-    -------
-    np.ndarray of float32, shape (n_records, dim)
-        Unit-length embeddings.
-
-    Notes
-    -----
-    Processing:
-    1. Load the model with the matching library (downloaded on first use).
-    2. Encode and normalise every row to unit length.
-    """
-    if model_name.startswith("minishlab/"):
-        from model2vec import StaticModel
-
-        vectors = StaticModel.from_pretrained(model_name).encode(
-            texts.tolist(), batch_size=batch_size
-        )
-    else:
-        from sentence_transformers import SentenceTransformer
-
-        vectors = SentenceTransformer(model_name, device="cpu").encode(
-            texts.tolist(), batch_size=batch_size
-        )
-    vectors = np.asarray(vectors, dtype=np.float32)
-    return vectors / np.maximum(np.linalg.norm(vectors, axis=1, keepdims=True), 1e-12)
-
-
 def check_embeddings(
     records: pd.DataFrame, truth: pd.Series, spec: dict[str, list[str]]
 ) -> dict[str, pd.Series]:
@@ -374,15 +335,16 @@ def check_embeddings(
 
     texts = record_texts(records, spec["fields"])
     ids = texts.index
-    encoder = SETTINGS["embedding_clustering"]["encoder"]
+    hdbscan = SETTINGS["embedding_clustering"]["hdbscan"]
+    agglomerative = SETTINGS["embedding_clustering"]["agglomerative"]
     model_names = json.loads(MODELS_CONFIG.read_text(encoding="utf-8"))["embedding_clustering"][
-        "encoder"
+        "hdbscan"
     ]["model_name"]
 
     results = {}
     for model_name in model_names:
         short = model_name.split("/")[-1]
-        vectors = encode(texts, model_name, encoder["batch_size"])
+        vectors = encode(texts, model_name, hdbscan["batch_size"])
 
         index = faiss.IndexFlatIP(vectors.shape[1])
         index.add(vectors)
@@ -396,17 +358,25 @@ def check_embeddings(
         )
         results[f"{short}/faiss_cc"] = clusters_from_pairs(ids, left[keep], right[keep])
 
-        labels = HDBSCAN(**SETTINGS["embedding_clustering"]["hdbscan"]).fit_predict(vectors)
+        labels = HDBSCAN(
+            metric="cosine",
+            min_cluster_size=hdbscan["min_cluster_size"],
+            min_samples=hdbscan["min_samples"],
+            cluster_selection_method=hdbscan["cluster_selection_method"],
+            cluster_selection_epsilon=hdbscan["cluster_selection_epsilon"],
+            copy=False,
+        ).fit_predict(vectors)
         noise = labels == -1
         labels[noise] = labels.max() + 1 + np.arange(noise.sum())
         results[f"{short}/hdbscan"] = pd.Series(labels, index=ids)
 
-        agglomerative = AgglomerativeClustering(
-            n_clusters=None, **SETTINGS["embedding_clustering"]["agglomerative"]
+        clusterer = AgglomerativeClustering(
+            n_clusters=None,
+            metric="cosine",
+            linkage=agglomerative["linkage"],
+            distance_threshold=agglomerative["distance_threshold"],
         )
-        results[f"{short}/agglomerative"] = pd.Series(
-            agglomerative.fit_predict(vectors), index=ids
-        )
+        results[f"{short}/agglomerative"] = pd.Series(clusterer.fit_predict(vectors), index=ids)
     return results
 
 

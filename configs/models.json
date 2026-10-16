@@ -48,23 +48,20 @@
     }
   },
   "embedding_clustering": {
-    "description": "Clustering of records directly in an embedding space. min_cluster_size and min_samples are 2 and 1 because library defaults treat true duplicate pairs as noise; noise points become singletons. cluster_selection_epsilon and distance_threshold are cosine distances (1 - similarity).",
-    "encoder": {
+    "description": "Clustering of the frozen candidate pairs re-scored by the cosine similarity of the two records' sentence embeddings (model_name, encoded batch_size texts at a time); same candidates as every other rung, so only the similarity differs. HDBSCAN runs once per split on the sparse candidate distances; min_cluster_size and min_samples are 2 and 1 because library defaults treat true duplicate pairs as noise; noise points become singletons. Agglomerative is graph_clustering.hierarchical on the embedding similarities. cluster_selection_epsilon and distance_threshold are cosine distances (1 - similarity), covering the graph rung's similarity range of 0.3 to 0.95.",
+    "hdbscan": {
       "model_name": ["sentence-transformers/all-MiniLM-L6-v2", "minishlab/potion-base-8M"],
       "batch_size": [256],
-      "normalize_embeddings": [true]
-    },
-    "hdbscan": {
       "min_cluster_size": [2],
       "min_samples": [1],
-      "metric": ["cosine"],
       "cluster_selection_method": ["leaf"],
-      "cluster_selection_epsilon": {"low": 0.0, "high": 0.3, "step": 0.02}
+      "cluster_selection_epsilon": {"low": 0.0, "high": 0.7, "step": 0.05}
     },
     "agglomerative": {
-      "metric": ["cosine"],
+      "model_name": ["sentence-transformers/all-MiniLM-L6-v2", "minishlab/potion-base-8M"],
+      "batch_size": [256],
       "linkage": ["average", "complete"],
-      "distance_threshold": {"low": 0.02, "high": 0.4, "step": 0.02}
+      "distance_threshold": {"low": 0.05, "high": 0.7, "step": 0.05}
     }
   },
   "probabilistic": {
