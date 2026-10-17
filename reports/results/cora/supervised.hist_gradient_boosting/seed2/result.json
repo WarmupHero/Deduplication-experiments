@@ -1,0 +1,485 @@
+{
+  "dataset": "cora",
+  "method": "supervised.hist_gradient_boosting",
+  "seed": 2,
+  "fixed": {},
+  "top_k": 10,
+  "objective": "b_cubed_f1",
+  "strategy": "optuna",
+  "best_params": {
+    "learning_rate": 0.1,
+    "max_iter": 300,
+    "max_leaf_nodes": 15,
+    "class_weight": "balanced",
+    "threshold": 0.3
+  },
+  "validation_score": 0.9925198169029809,
+  "test": {
+    "pairwise_precision": 0.942063492063492,
+    "pairwise_recall": 0.9991582491582491,
+    "pairwise_f1": 0.9697712418300654,
+    "b_cubed_precision": 0.961948147651906,
+    "b_cubed_recall": 0.9956521739130434,
+    "b_cubed_f1": 0.9785100194871097,
+    "cluster_precision": 0.9069767441860465,
+    "cluster_recall": 0.8863636363636364,
+    "cluster_f1": 0.896551724137931,
+    "ari": 0.9674104362736013,
+    "n_clusters": 43,
+    "n_entities": 44
+  },
+  "seconds_total": 28.19628080000257,
+  "seconds_test": 0.8661724000012327,
+  "peak_mb": 214,
+  "trials": [
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.9925198169029809,
+      "seconds": 1.1269012000011571
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.9101502999983495
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 100,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.5
+      },
+      "score": 0.9820160491427975,
+      "seconds": 0.6379765000019688
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 100,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.4
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.57466050000221
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.2
+      },
+      "score": 0.9925198169029809,
+      "seconds": 1.015256099999533
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.9925198169029809,
+      "seconds": 2.2187384000026213
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 300,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.5
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.6684007000003476
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.5
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.9619259999999485
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 400,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.8103026999997383
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 100,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.4
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.5556920999988506
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 100,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.9802137469919868,
+      "seconds": 0.759195999999065
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 500,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.9354861000028905
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.023828000001230976
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.01810769999792683
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 300,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.8180232999984582
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 500,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.9925198169029809,
+      "seconds": 1.0288258000000496
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.017962699999770848
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.017959099997824524
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 200,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.8125050000016927
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 300,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.5
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.8023216000001412
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 400,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.2
+      },
+      "score": 0.9925198169029809,
+      "seconds": 1.3495412000011129
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 200,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.6722339000007196
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 100,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.2
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.638410899999144
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 300,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.6906790000030014
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.017990999996982282
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 300,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.4
+      },
+      "score": 0.9925198169029809,
+      "seconds": 1.0792604999987816
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 200,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.6386520999985805
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 500,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.4
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.8051924000028521
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 100,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.5446984999980486
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.9925198169029809,
+      "seconds": 1.10352359999888
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 200,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.6933658999987529
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.2
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.023854300001403317
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 200,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.2
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.9342633000014757
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.017922099999850616
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 200,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.2
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.017699399999401066
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.2
+      },
+      "score": 0.9925198169029809,
+      "seconds": 1.099306099997193
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 200,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.2
+      },
+      "score": 0.9925198169029809,
+      "seconds": 1.0236912000000302
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.9925198169029809,
+      "seconds": 1.077144800001406
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 200,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.5
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.018015900001046248
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 100,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.9925198169029809,
+      "seconds": 0.01776590000008582
+    }
+  ],
+  "git_commit": "5f800f74bda77b957f8f1442e273fc37248dd5d7",
+  "git_dirty": false,
+  "config_sha256": {
+    "datasets.json": "fbc14a38db0a8ee5daab797628683483808207c34fdf245d6b1b0b454857c868",
+    "datasets_smoke.json": "6b8692a91f62f450dc082d80aa9ed1bfaebcc108738028125e0fb6248dd7eee5",
+    "experiment.json": "c8c1926eed76de096ba708a9798ca261bf514a680d7b32ac221692b006c50856",
+    "models.json": "216c9d7fe3f9fd6e50ebc7b5e98e04e5a99a3da0afa5046829a79d5796f49bb1",
+    "tuning.json": "050715af58d6de84e9ae42ac63cb2b385f3954b374bfa3b9acf0adb2056450c5"
+  }
+}
