@@ -434,7 +434,9 @@ def check_recordlinkage(
         right = position[matches.get_level_values(1)].to_numpy()
         return clusters_from_pairs(frame.index, left, right)
 
-    ecm = recordlinkage.ECMClassifier(**SETTINGS["probabilistic"]["recordlinkage_ecm"])
+    ecm_params = dict(SETTINGS["probabilistic"]["recordlinkage_ecm"])
+    ecm_params.pop("match_weight_threshold")  # the benchmark's cut, not an ECM argument
+    ecm = recordlinkage.ECMClassifier(**ecm_params)
     ecm_matches = ecm.fit_predict(features)
 
     labels = (
@@ -500,7 +502,7 @@ def check_splink(
         linker.training.estimate_parameters_using_expectation_maximisation(block_on(column))
     predictions = linker.inference.predict()
     clustered = linker.clustering.cluster_pairwise_predictions_at_threshold(
-        predictions, threshold_match_probability=params["match_probability_threshold"]
+        predictions, threshold_match_weight=params["match_weight_threshold"]
     ).as_pandas_dataframe()
     labels = clustered.set_index("record_id")["cluster_id"]
     return {"splink": labels.reindex(records["record_id"].to_numpy())}

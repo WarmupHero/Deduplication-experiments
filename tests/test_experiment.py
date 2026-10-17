@@ -177,7 +177,7 @@ def test_provenance_names_the_commit_and_hashes_every_config() -> None:
 def test_every_method_runs_through_the_runner(tiny_dataset: str, method: str) -> None:
     # The middle candidate of each setting, as in the smoke test.
     section, model = method.split(".")
-    space = load_space(section, model)
+    space = load_space(section, model, experiment.factor_settings(method)[-1])
     setting = {name: (c := candidates_of(spec))[len(c) // 2] for name, spec in space.items()}
     splits = experiment.load_splits(tiny_dataset, seed=0)
     target = experiment.replace(splits["validation"], truth=None)

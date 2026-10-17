@@ -384,6 +384,37 @@ def ecm_features(
     return compare.compute(index, frame).reindex(index)
 
 
+def comparison_vectors(
+    records: pd.DataFrame, pairs: pd.DataFrame, match_fields: dict[str, str]
+) -> pd.DataFrame:
+    """
+    ``ecm_features`` of a split's pairs, computed once per process.
+
+    Parameters
+    ----------
+    records : pd.DataFrame, shape (n_records, n_columns)
+        The split's records.
+    pairs : pd.DataFrame, shape (n_pairs, 3)
+        Its candidate pairs.
+    match_fields : dict of str to str
+        Fields to compare and how.
+
+    Returns
+    -------
+    pd.DataFrame, shape (n_pairs, n_fields)
+        As ``ecm_features``.
+
+    Notes
+    -----
+    Processing:
+    1. Look the vectors up by content key, computing them on a miss.
+    """
+    key = content_key("ecm", records["record_id"], pairs[["left_id", "right_id"]], match_fields)
+    if key not in _MODELS:
+        _MODELS[key] = ecm_features(records, pairs, match_fields)
+    return _MODELS[key]
+
+
 def ecm_scores(
     train: pd.DataFrame,
     train_pairs: pd.DataFrame,
@@ -421,14 +452,10 @@ def ecm_scores(
     import recordlinkage
 
     fields = dataset_config["match_fields"]
-    vectors = {}
-    for name, records, split_pairs in (("train", train, train_pairs), ("target", target, pairs)):
-        key = content_key(
-            "ecm", records["record_id"], split_pairs[["left_id", "right_id"]], fields
-        )
-        if key not in _MODELS:
-            _MODELS[key] = ecm_features(records, split_pairs, fields)
-        vectors[name] = _MODELS[key]
+    vectors = {
+        "train": comparison_vectors(train, train_pairs, fields),
+        "target": comparison_vectors(target, pairs, fields),
+    }
     if vectors["target"].empty:
         return np.zeros(0)
     classifier = recordlinkage.ECMClassifier(**settings)

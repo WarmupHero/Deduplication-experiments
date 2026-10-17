@@ -82,6 +82,16 @@ candidates:
 experiment:
 	$(PYTHON_INTERPRETER) -m dedup_bench.experiment run $(DATASET) $(METHOD)
 
+## Run every method on every dataset, each in its own process
+.PHONY: experiments
+experiments:
+	$(PYTHON_INTERPRETER) -m dedup_bench.experiment run-all
+
+## Write the results tables to reports/tables
+.PHONY: report
+report:
+	$(PYTHON_INTERPRETER) -m dedup_bench.report
+
 #################################################################################
 # Self Documenting Commands                                                     #
 #################################################################################

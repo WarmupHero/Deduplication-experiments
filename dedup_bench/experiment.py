@@ -26,9 +26,11 @@ from collections.abc import Callable
 from dataclasses import dataclass, replace
 from functools import partial
 import hashlib
+import itertools
 import json
 from pathlib import Path
 import subprocess
+import sys
 import threading
 import time
 from typing import Annotated, Any, Self
@@ -41,7 +43,7 @@ import typer
 from dedup_bench.baselines import equal_keys, exact_key, exact_keys
 from dedup_bench.blocking.candidates import candidates_dir
 from dedup_bench.clustering import embedding, graph
-from dedup_bench.config import CONFIGS_DIR, PROJ_ROOT, RESULTS_DIR
+from dedup_bench.config import CONFIGS_DIR, MODELS_CONFIG, PROJ_ROOT, RESULTS_DIR
 from dedup_bench.dataset import load_datasets_config, load_prepared, record_texts
 from dedup_bench.embeddings import embedding_pairs
 from dedup_bench.evaluation.metrics import (
@@ -50,6 +52,7 @@ from dedup_bench.evaluation.metrics import (
     cluster_scores,
     pairwise_scores,
 )
+from dedup_bench.learned import active_learning_scores, supervised_scores
 from dedup_bench.probabilistic import ecm_scores, splink_scores
 from dedup_bench.splits import SPLITS, entity_split, load_experiment
 from dedup_bench.tuning import load_settings, load_space, tune
@@ -247,7 +250,7 @@ def run_splink(
     target : SplitData
         The split to cluster.
     params : dict
-        Splink settings plus ``match_probability_threshold``.
+        Splink settings plus ``match_weight_threshold``.
     seed : int
         Seed of Splink's u sampling.
 
@@ -281,7 +284,7 @@ def run_ecm(train: SplitData, target: SplitData, params: dict[str, Any], seed: i
     target : SplitData
         The split to cluster.
     params : dict
-        ECM settings plus ``match_probability_threshold``.
+        ECM settings plus ``match_weight_threshold``.
     seed : int
         Unused; ECM is deterministic.
 
@@ -302,6 +305,111 @@ def run_ecm(train: SplitData, target: SplitData, params: dict[str, Any], seed: i
         train.records, train.pairs, target.records, target.pairs, config, settings
     )
     return cluster_probabilities(target, probability, params[MATCH_THRESHOLD])
+
+
+def cluster_by_probability(target: SplitData, probability: Any, threshold: float) -> Prediction:
+    """
+    Connected components of the candidate pairs at a match-probability threshold.
+
+    Parameters
+    ----------
+    target : SplitData
+        The split that was scored.
+    probability : np.ndarray of float, shape (n_pairs,)
+        Match probability of each of the target's candidate pairs.
+    threshold : float
+        Pairs with a lower probability are dropped.
+
+    Returns
+    -------
+    Prediction
+        The clusters, and the pairs scored by their match probability.
+
+    Notes
+    -----
+    Processing:
+    1. Use the probabilities as the pairs' similarity and run
+       ``graph.connected_components``.
+    """
+    pairs = target.pairs.assign(similarity=probability)
+    clusters = graph.connected_components(pd.Index(target.records["record_id"]), pairs, threshold)
+    return Prediction(clusters, pairs.rename(columns={"similarity": "score"}))
+
+
+def run_active_learning(
+    train: SplitData, target: SplitData, params: dict[str, Any], seed: int
+) -> Prediction:
+    """
+    A random forest trained on the train pairs it asked a simulated oracle about.
+
+    Parameters
+    ----------
+    train : SplitData
+        Pool of pairs to query; its truth answers the queries.
+    target : SplitData
+        The split to cluster.
+    params : dict
+        ``label_budget``, query and forest settings, and ``threshold``.
+    seed : int
+        Seed of the querying and the forest.
+
+    Returns
+    -------
+    Prediction
+        The clusters, and the pairs scored by match probability.
+
+    Notes
+    -----
+    Processing:
+    1. Score the target's pairs with ``learned.active_learning_scores``.
+    2. Cluster at the threshold with ``cluster_by_probability``.
+    """
+    settings = {name: value for name, value in params.items() if name != "threshold"}
+    fields = load_datasets_config()[target.dataset]["match_fields"]
+    probability = active_learning_scores(
+        train.records, train.pairs, train.truth, target.records, target.pairs, fields,
+        settings, seed,
+    )  # fmt: skip
+    return cluster_by_probability(target, probability, params["threshold"])
+
+
+def run_supervised(
+    model: str, train: SplitData, target: SplitData, params: dict[str, Any], seed: int
+) -> Prediction:
+    """
+    A classifier trained on every labelled train pair: the supervised ceiling.
+
+    Parameters
+    ----------
+    model : str
+        ``random_forest`` or ``hist_gradient_boosting``.
+    train : SplitData
+        Pairs and truth to learn from.
+    target : SplitData
+        The split to cluster.
+    params : dict
+        Classifier settings and ``threshold``.
+    seed : int
+        Seed of the classifier.
+
+    Returns
+    -------
+    Prediction
+        The clusters, and the pairs scored by match probability.
+
+    Notes
+    -----
+    Processing:
+    1. Score the target's pairs with ``learned.supervised_scores``.
+    2. Cluster at the threshold with ``cluster_by_probability``.
+    """
+    settings = {name: value for name, value in params.items() if name != "threshold"}
+    fields = load_datasets_config()[target.dataset]["match_fields"]
+    probability = supervised_scores(
+        model, train.records, train.pairs, train.truth, target.records, target.pairs, fields,
+        settings, seed,
+    )  # fmt: skip
+    return cluster_by_probability(target, probability, params["threshold"])
 
 
 def run_exact_key(
@@ -353,7 +461,42 @@ METHODS: dict[str, Method] = {
     ),
     "probabilistic.splink": run_splink,
     "probabilistic.recordlinkage_ecm": run_ecm,
+    "active_learning.random_forest": run_active_learning,
+    "supervised.random_forest": partial(run_supervised, "random_forest"),
+    "supervised.hist_gradient_boosting": partial(run_supervised, "hist_gradient_boosting"),
 }
+
+
+def factor_settings(method: str) -> list[dict[str, Any]]:
+    """
+    Every combination of a method's ``not_tuned`` settings that is run and reported.
+
+    Parameters
+    ----------
+    method : str
+        Key of ``METHODS``.
+
+    Returns
+    -------
+    list of dict
+        One dict per combination, largest values first (a larger label budget
+        extends a smaller one's query order, which is then reused); ``[{}]``
+        when the method has none.
+
+    Notes
+    -----
+    Processing:
+    1. Find the method's settings in ``not_tuned`` and their values in
+       ``configs/models.json``.
+    2. Return their product.
+    """
+    section, model = method.split(".")
+    space = json.loads(MODELS_CONFIG.read_text("utf-8"))[section][model]
+    prefix = f"{method}."
+    not_tuned = load_settings()["not_tuned"]
+    names = [path.removeprefix(prefix) for path in not_tuned if path.startswith(prefix)]
+    values = [sorted(space[name], reverse=True) for name in names]
+    return [dict(zip(names, combo, strict=True)) for combo in itertools.product(*values)]
 
 
 def load_splits(dataset: str, seed: int) -> dict[str, SplitData]:
@@ -510,7 +653,7 @@ def provenance() -> dict[str, Any]:
     }
 
 
-def results_dir(dataset: str, method: str, seed: int) -> Path:
+def results_dir(dataset: str, method: str, seed: int, fixed: dict[str, Any] | None = None) -> Path:
     """
     Folder of one run's result files.
 
@@ -520,18 +663,22 @@ def results_dir(dataset: str, method: str, seed: int) -> Path:
         Dataset and method name.
     seed : int
         Seed.
+    fixed : dict or None, default None
+        The run's ``not_tuned`` settings, if any.
 
     Returns
     -------
     Path
-        ``reports/results/<dataset>/<method>/seed<seed>``.
+        ``reports/results/<dataset>/<method>/seed<seed>``, with one folder per
+        fixed setting (e.g. ``label_budget50``) before the seed.
 
     Notes
     -----
     Processing:
-    1. Join the results folder, dataset, method and seed.
+    1. Join the results folder, dataset, method, fixed settings and seed.
     """
-    return RESULTS_DIR / dataset / method / f"seed{seed}"
+    factors = [f"{name}{value}" for name, value in (fixed or {}).items()]
+    return RESULTS_DIR.joinpath(dataset, method, *factors, f"seed{seed}")
 
 
 def run_experiment(
@@ -589,6 +736,7 @@ def run_experiment(
         "dataset": dataset,
         "method": method,
         "seed": seed,
+        "fixed": fixed or {},
         "top_k": blocking["top_k"],
         "objective": settings["objective"],
         "strategy": tuning.strategy,
@@ -602,7 +750,7 @@ def run_experiment(
         **provenance(),
     }
 
-    out_dir = results_dir(dataset, method, seed)
+    out_dir = results_dir(dataset, method, seed, fixed)
     out_dir.mkdir(parents=True, exist_ok=True)
     pd.DataFrame({"record_id": clusters.index, "cluster": clusters.to_numpy()}).to_parquet(
         out_dir / "membership.parquet", index=False
@@ -646,20 +794,66 @@ def run(
     Notes
     -----
     Processing:
-    1. Run ``run_experiment`` for every seed and log its test scores.
+    1. Run ``run_experiment`` for every seed and every combination of the
+       method's ``not_tuned`` settings, and log its test scores.
     """
     if method not in METHODS:
         raise typer.BadParameter(f"unknown method {method!r}; known: {sorted(METHODS)}")
     for seed in seeds or load_experiment()["seeds"]:
-        result = run_experiment(dataset, method, seed)
-        test = result["test"]
-        logger.info(
-            f"{dataset} {method} seed {seed}: best {result['best_params']}, "
-            f"validation {result['objective']} {result['validation_score']:.3f}, "
-            f"test B3 F1 {test['b_cubed_f1']:.3f}, pairwise F1 {test['pairwise_f1']:.3f}, "
-            f"cluster F1 {test['cluster_f1']:.3f}, ARI {test['ari']:.3f}, "
-            f"{result['seconds_total']:.1f} s, {result['peak_mb']} MB"
-        )
+        for fixed in factor_settings(method):
+            result = run_experiment(dataset, method, seed, fixed)
+            test = result["test"]
+            logger.info(
+                f"{dataset} {method} {fixed or ''} seed {seed}: "
+                f"best {result['best_params']}, "
+                f"validation {result['objective']} {result['validation_score']:.3f}, "
+                f"test B3 F1 {test['b_cubed_f1']:.3f}, pairwise F1 {test['pairwise_f1']:.3f}, "
+                f"cluster F1 {test['cluster_f1']:.3f}, ARI {test['ari']:.3f}, "
+                f"{result['seconds_total']:.1f} s, {result['peak_mb']} MB"
+            )
+
+
+@app.command("run-all")
+def run_all(
+    methods: Annotated[
+        list[str] | None, typer.Option("--method", help="Methods (repeatable; default: all).")
+    ] = None,
+) -> None:
+    """
+    Run methods on every dataset of configs/experiment.json, each in its own process.
+
+    \f
+    Parameters
+    ----------
+    methods : list of str or None
+        Keys of ``METHODS``; None means all, in registry order.
+
+    Returns
+    -------
+    None
+        Writes every run's result files.
+
+    Raises
+    ------
+    RuntimeError
+        If any run failed; the others still run.
+
+    Notes
+    -----
+    Processing:
+    1. For every dataset and method, run ``run`` in a fresh process, so caches
+       and memory do not build up across runs.
+    2. Report the failed runs at the end.
+    """
+    failed = []
+    for dataset in load_experiment()["datasets"]:
+        for method in methods or METHODS:
+            command = [sys.executable, "-m", "dedup_bench.experiment", "run", dataset, method]
+            if subprocess.run(command, cwd=PROJ_ROOT, check=False).returncode:
+                failed.append(f"{dataset} {method}")
+    if failed:
+        raise RuntimeError(f"{len(failed)} run(s) failed: {failed}")
+    logger.success("every run finished")
 
 
 @app.command()
@@ -667,6 +861,10 @@ def evaluate(
     dataset: Annotated[str, typer.Argument(help="Dataset.")],
     method: Annotated[str, typer.Argument(help="Method, as <section>.<model>.")],
     seed: Annotated[int, typer.Argument(help="Seed.")],
+    fixed: Annotated[
+        str,
+        typer.Option(help="The run's not_tuned settings as JSON, e.g. '{\"label_budget\": 50}'."),
+    ] = "{}",
 ) -> None:
     """
     Recompute a run's test metrics from its membership file and check result.json.
@@ -678,6 +876,8 @@ def evaluate(
         Dataset and method name.
     seed : int
         Seed.
+    fixed : str
+        JSON object of the run's ``not_tuned`` settings.
 
     Returns
     -------
@@ -695,7 +895,7 @@ def evaluate(
     1. Read the membership file and the test truth.
     2. Recompute every metric and compare with ``result.json``.
     """
-    out_dir = results_dir(dataset, method, seed)
+    out_dir = results_dir(dataset, method, seed, json.loads(fixed))
     membership = pd.read_parquet(out_dir / "membership.parquet")
     clusters = pd.Series(membership["cluster"].to_numpy(), index=membership["record_id"])
     saved = json.loads((out_dir / "result.json").read_text("utf-8"))["test"]

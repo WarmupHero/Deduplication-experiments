@@ -82,7 +82,7 @@
     }
   },
   "active_learning": {
-    "description": "A random forest on the candidate pairs' similarity features that asks a simulated oracle (answering from the train entities' ground truth) about the pairs it is least sure of. It starts from initial_labels random pairs, then queries query_batch_size pairs per round, those whose match probability is closest to 0.5, until label_budget labels are used. label_budget is not tuned: every value is run and reported, giving a score-versus-labels curve.",
+    "description": "A random forest on the candidate pairs' features (the per-field similarities of match_fields in configs/datasets.json, as ECM uses, plus the TF-IDF similarity) that asks a simulated oracle (answering from the train entities' ground truth) about train pairs. It starts from initial_labels random pairs, then queries query_batch_size pairs per round, those whose match probability is closest to 0.5, until label_budget labels are used; while only non-matches (or only matches) have been seen it queries the most (least) similar pairs instead, since a forest cannot rank uncertainty from one class. The pairs are clustered by connected components on those whose probability is at least threshold. label_budget is not tuned: every value is run and reported, giving a score-versus-labels curve.",
     "random_forest": {
       "label_budget": [10, 25, 50, 100, 200, 500],
       "initial_labels": [10],
@@ -94,7 +94,7 @@
     }
   },
   "supervised": {
-    "description": "Upper bound: pair classifiers trained on similarity features of labelled train pairs. threshold is the predicted match probability above which a pair counts as a match.",
+    "description": "Upper bound: pair classifiers trained on every labelled train candidate pair, with the active learner's features. threshold is the predicted match probability above which a pair counts as a match; the pairs are then clustered by connected components.",
     "random_forest": {
       "n_estimators": {"low": 100, "high": 500, "step": 100},
       "max_depth": [null, 10, 20],
