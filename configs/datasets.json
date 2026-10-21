@@ -45,7 +45,9 @@
     "em_blocking": []
   },
   "skroutz": {
-    "text_fields": ["title"]
+    "text_fields": ["title"],
+    "match_fields": {"title": "jaro_winkler"},
+    "em_blocking": []
   },
   "abt_buy": {
     "text_fields": ["name"],

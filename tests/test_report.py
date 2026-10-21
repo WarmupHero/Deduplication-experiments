@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 import pandas as pd
+import pytest
 
 from dedup_bench import report
 
@@ -42,3 +43,19 @@ def test_metric_table_mean_and_sample_std(tmp_path: Path) -> None:
 def test_markdown_table_layout() -> None:
     table = pd.DataFrame({"d1": ["x"]}, index=pd.Index(["m"], name="method"))
     assert report.markdown_table(table) == "| method | d1 |\n|---|---|\n| m | x |\n"
+
+
+def test_excluded_methods_are_marked_and_listed_as_limitations(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    write_result(tmp_path / "results", "m", 0, 0.8)
+    excluded = {"d1": {"big": "out of memory: about 14 GB"}}
+    monkeypatch.setattr(report, "load_experiment", lambda: {"excluded": excluded})
+    monkeypatch.setattr(report, "TABLE_METRICS", {"b_cubed_f1": 3})
+    report.main(tmp_path / "results", tmp_path / "tables")
+    b_cubed = (tmp_path / "tables" / "b_cubed_f1.md").read_text("utf-8")
+    assert "| m | 0.800 ± 0.000 |" in b_cubed
+    assert "| big | excluded: out of memory |" in b_cubed
+    health = (tmp_path / "tables" / "health.md").read_text("utf-8")
+    assert "## Limitations: methods not run" in health
+    assert "| big / d1 | out of memory: about 14 GB |" in health

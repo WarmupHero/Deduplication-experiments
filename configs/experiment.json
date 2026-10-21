@@ -1,10 +1,18 @@
 {
-  "description": "Which datasets the benchmark runs on, and how each is split. Records are split by entity, so no entity spans two splits, into train / validation / test at the given shares of records. Each seed gives a different split and also seeds the methods. Skroutz is left out until the scaling step.",
+  "description": "Which datasets the benchmark runs on, and how each is split. Records are split by entity, so no entity spans two splits, into train / validation / test at the given shares of records. Each seed gives a different split and also seeds the methods. Skroutz (238,170 records) is not in datasets, so the default run stays at a few hours; run it with run-all --dataset skroutz. excluded lists, per dataset, methods that are not run and why; they are reported as limitations. run-all stops any run that leaves less than min_free_memory_mb of the machine's memory free (user's rule: always keep 2 GB free).",
   "datasets": ["febrl3", "restaurants", "pricerunner", "abt_buy", "cora"],
   "seeds": [0, 1, 2, 3, 4],
   "split": {
     "train": 0.6,
     "validation": 0.2,
     "test": 0.2
-  }
+  },
+  "excluded": {
+    "skroutz": {
+      "supervised.random_forest": "out of memory: an unlimited-depth 500-tree forest took 2 GB on PriceRunner and would need about 14 GB here",
+      "graph_clustering.hierarchical": "out of memory: a dense distance matrix per connected group, about 13 GB for a 40,000-record group at low thresholds",
+      "embedding_clustering.agglomerative": "out of memory: the same dense distance matrix per connected group as hierarchical"
+    }
+  },
+  "min_free_memory_mb": 2048
 }

@@ -1,9 +1,12 @@
 import hashlib
 import json
 from pathlib import Path
+import sys
 import time
+from types import SimpleNamespace
 
 import pandas as pd
+import psutil
 import pytest
 
 from dedup_bench import experiment
@@ -201,3 +204,64 @@ def test_cluster_probabilities_cut_on_match_weight() -> None:
     assert prediction.pairs["score"].tolist() == probability
     zero = experiment.cluster_probabilities(target, probability, threshold=0.0).clusters
     assert zero["a"] == zero["c"] != zero["d"]
+
+
+def test_resume_skips_seeds_that_already_have_a_result(
+    tiny_dataset: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    experiment.run_experiment(tiny_dataset, METHOD, seed=0)
+    real, calls = experiment.run_experiment, []
+
+    def spy(dataset, method, seed, fixed=None):
+        calls.append(seed)
+        return real(dataset, method, seed, fixed)
+
+    monkeypatch.setattr(experiment, "run_experiment", spy)
+    experiment.run(tiny_dataset, METHOD, seeds=[0], resume=True)
+    assert calls == []
+    experiment.run(tiny_dataset, METHOD, seeds=[0], resume=False)
+    assert calls == [0]
+
+
+def fake_experiment() -> dict:
+    return {
+        "datasets": ["usual"],
+        "excluded": {"big": {"m.two": "out of memory: too large"}},
+        "min_free_memory_mb": 2048,
+    }
+
+
+def test_run_all_skips_excluded_methods_and_resumes(monkeypatch: pytest.MonkeyPatch) -> None:
+    commands = []
+    monkeypatch.setattr(experiment, "load_experiment", fake_experiment)
+    monkeypatch.setattr(experiment, "run_guarded", lambda c, mb: commands.append((c, mb)))
+    experiment.run_all(methods=["m.one", "m.two"], datasets=["big"])
+    assert [(c[-3:], mb) for c, mb in commands] == [(["big", "m.one", "--resume"], 2048)]
+    commands.clear()
+    experiment.run_all(methods=["m.two"], datasets=None)
+    assert [c[-3:] for c, _ in commands] == [["usual", "m.two", "--resume"]]
+
+
+def test_run_all_reports_stopped_runs(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(experiment, "load_experiment", fake_experiment)
+    monkeypatch.setattr(experiment, "run_guarded", lambda c, mb: "stopped: low memory")
+    with pytest.raises(RuntimeError, match="m.one.*stopped: low memory"):
+        experiment.run_all(methods=["m.one"], datasets=["big"])
+
+
+def test_run_guarded_reports_the_exit_code() -> None:
+    assert experiment.run_guarded([sys.executable, "-c", "pass"], 0) is None
+    assert (
+        experiment.run_guarded([sys.executable, "-c", "raise SystemExit(3)"], 0) == "exit code 3"
+    )
+
+
+def test_run_guarded_stops_a_run_when_free_memory_runs_low(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Pretend the machine has no memory left: a 30-second run must stop at once.
+    monkeypatch.setattr(psutil, "virtual_memory", lambda: SimpleNamespace(available=0))
+    start = time.perf_counter()
+    problem = experiment.run_guarded([sys.executable, "-c", "import time; time.sleep(30)"], 2048)
+    assert problem == "stopped: the machine's free memory fell below 2048 MB"
+    assert time.perf_counter() - start < 10

@@ -22,7 +22,28 @@ make smoke                # run every library once on Febrl 3 and the restaurant
 make candidates           # split every dataset and build its frozen candidate pairs
 make experiment DATASET=cora METHOD=graph_clustering.connected_components
                           # tune on validation, test once, save to reports/results/
+make experiments          # every method on every dataset (about 6.5 h), resuming
+make report               # results tables in reports/tables/
 ```
+
+Skroutz is not part of `make experiments`. Run it on its own (about 6-8 h after its candidate
+sets, which take about 1.5-2 h):
+
+```bash
+python -m dedup_bench.blocking.candidates skroutz
+python -m dedup_bench.experiment run-all --dataset skroutz
+```
+
+## Limitations
+
+- **Methods not run on Skroutz (out of memory).** The supervised random forest (unlimited
+  depth, 500 trees: 2 GB on PriceRunner, about 14 GB on Skroutz), hierarchical clustering and
+  embedding agglomerative clustering (a dense distance matrix per connected group of pairs,
+  about 13 GB for a 40,000-record group) would exhaust a 16 GB machine. They are listed under
+  `excluded` in `configs/experiment.json`, marked `excluded` in the results tables and
+  explained in `reports/tables/health.md`.
+- **Memory guard.** `run-all` stops any run that leaves less than `min_free_memory_mb`
+  (2 GB) of the machine's memory free and reports it, rather than letting the machine run out.
 
 ## Data
 

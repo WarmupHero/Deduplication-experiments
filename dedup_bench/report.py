@@ -11,7 +11,9 @@ Output: in ``reports/tables/``:
 - ``<metric>.md``: one table per metric of ``TABLE_METRICS``, methods by
   datasets, each cell the mean ± standard deviation over seeds
 - ``health.md``: per method and dataset, the number of seeds, and whether
-  every run used the same clean commit
+  every run used the same clean commit; then the limitations, the methods
+  ``configs/experiment.json`` excludes per dataset and why. Their cells in the
+  metric tables read ``excluded: <reason>``.
 """
 
 import json
@@ -21,6 +23,7 @@ import pandas as pd
 import typer
 
 from dedup_bench.config import REPORTS_DIR, RESULTS_DIR
+from dedup_bench.splits import load_experiment
 
 TABLES_DIR = REPORTS_DIR / "tables"
 
@@ -172,6 +175,58 @@ def health_table(runs: pd.DataFrame) -> pd.DataFrame:
     return table.astype(str)
 
 
+def mark_excluded(table: pd.DataFrame, excluded: dict[str, dict[str, str]]) -> pd.DataFrame:
+    """
+    Mark the cells of methods a dataset excludes, instead of leaving them empty.
+
+    Parameters
+    ----------
+    table : pd.DataFrame, shape (n_methods, n_datasets)
+        A metric table from ``metric_table``.
+    excluded : dict
+        ``dataset -> method -> reason``, from ``configs/experiment.json``.
+
+    Returns
+    -------
+    pd.DataFrame
+        The table with ``excluded: <reason before the first colon>`` in those
+        cells; rows or columns are added if the method or dataset has no run.
+
+    Notes
+    -----
+    Processing:
+    1. Write the short reason into each excluded cell.
+    """
+    table = table.copy()
+    for dataset, methods in excluded.items():
+        for method, reason in methods.items():
+            table.loc[method, dataset] = f"excluded: {reason.split(':')[0]}"
+    return table.fillna("")
+
+
+def limitations_table(excluded: dict[str, dict[str, str]]) -> pd.DataFrame:
+    """
+    The excluded methods and why, one row each.
+
+    Parameters
+    ----------
+    excluded : dict
+        ``dataset -> method -> reason``, from ``configs/experiment.json``.
+
+    Returns
+    -------
+    pd.DataFrame, shape (n_excluded, 1)
+        ``reason``, indexed by ``method / dataset``.
+
+    Notes
+    -----
+    Processing:
+    1. Flatten the mapping.
+    """
+    rows = {f"{m} / {d}": r for d, methods in excluded.items() for m, r in methods.items()}
+    return pd.DataFrame({"reason": rows.values()}, index=pd.Index(rows, name="method / dataset"))
+
+
 @app.command()
 def main(
     results_dir: Path = RESULTS_DIR,
@@ -201,21 +256,28 @@ def main(
     Notes
     -----
     Processing:
-    1. Load every run.
-    2. Write the run list, the metric tables and the health table.
+    1. Load every run and the exclusions of ``configs/experiment.json``.
+    2. Write the run list, the metric tables (excluded cells marked) and the
+       health table followed by the limitations.
     """
     runs = load_runs(results_dir)
     if runs.empty:
         raise FileNotFoundError(f"no result.json under {results_dir}")
     tables_dir.mkdir(parents=True, exist_ok=True)
     runs.to_csv(tables_dir / "runs.csv", index=False)
+    excluded = load_experiment().get("excluded", {})
     for metric, decimals in TABLE_METRICS.items():
-        table = metric_table(runs, metric, decimals)
+        table = mark_excluded(metric_table(runs, metric, decimals), excluded)
         table.index.name = "method"
         title = f"# Test {metric}, mean ± standard deviation over seeds\n\n"
         (tables_dir / f"{metric}.md").write_text(title + markdown_table(table), "utf-8")
     title = "# Run health: seeds, commits, uncommitted-code runs and peak memory\n\n"
-    (tables_dir / "health.md").write_text(title + markdown_table(health_table(runs)), "utf-8")
+    health = title + markdown_table(health_table(runs))
+    if excluded:
+        health += "\n## Limitations: methods not run\n\n" + markdown_table(
+            limitations_table(excluded)
+        )
+    (tables_dir / "health.md").write_text(health, "utf-8")
 
 
 if __name__ == "__main__":

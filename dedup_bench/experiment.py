@@ -767,6 +767,9 @@ def run(
     seeds: Annotated[
         list[int] | None, typer.Option("--seed", help="Seeds (repeatable; default: all).")
     ] = None,
+    resume: Annotated[
+        bool, typer.Option(help="Skip seeds whose result.json already exists.")
+    ] = False,
 ) -> None:
     """
     Tune and test one method on one dataset for the given seeds.
@@ -780,6 +783,9 @@ def run(
         Key of ``METHODS``.
     seeds : list of int or None
         Seeds; None means those in ``configs/experiment.json``.
+    resume : bool, default False
+        Skip every seed (and fixed setting) that already has a ``result.json``,
+        so an interrupted run continues where it stopped.
 
     Returns
     -------
@@ -795,12 +801,16 @@ def run(
     -----
     Processing:
     1. Run ``run_experiment`` for every seed and every combination of the
-       method's ``not_tuned`` settings, and log its test scores.
+       method's ``not_tuned`` settings, skipping finished ones when resuming,
+       and log its test scores.
     """
     if method not in METHODS:
         raise typer.BadParameter(f"unknown method {method!r}; known: {sorted(METHODS)}")
     for seed in seeds or load_experiment()["seeds"]:
         for fixed in factor_settings(method):
+            if resume and (results_dir(dataset, method, seed, fixed) / "result.json").exists():
+                logger.info(f"{dataset} {method} {fixed or ''} seed {seed}: done, skipped")
+                continue
             result = run_experiment(dataset, method, seed, fixed)
             test = result["test"]
             logger.info(
@@ -813,20 +823,68 @@ def run(
             )
 
 
+def run_guarded(command: list[str], min_free_mb: int) -> str | None:
+    """
+    Run a command in its own process, stopping it if the machine runs low on memory.
+
+    Parameters
+    ----------
+    command : list of str
+        The command to run from the project root.
+    min_free_mb : int
+        The process (and its children) is stopped as soon as the machine's
+        available memory falls below this, whatever is using it.
+
+    Returns
+    -------
+    str or None
+        None if the command finished with exit code 0, otherwise why it did not.
+
+    Notes
+    -----
+    Processing:
+    1. Start the command, then check the machine's available memory five
+       times a second until it exits.
+    2. If memory runs low, kill the process and its children (children first,
+       so none is left running) and report it.
+    """
+    import psutil
+
+    process = subprocess.Popen(command, cwd=PROJ_ROOT)
+    while process.poll() is None:
+        if psutil.virtual_memory().available < min_free_mb * 2**20:
+            parent = psutil.Process(process.pid)
+            for member in [*parent.children(recursive=True), parent]:
+                try:
+                    member.kill()
+                except psutil.NoSuchProcess:
+                    pass
+            process.wait()
+            return f"stopped: the machine's free memory fell below {min_free_mb} MB"
+        time.sleep(0.2)
+    return None if process.returncode == 0 else f"exit code {process.returncode}"
+
+
 @app.command("run-all")
 def run_all(
     methods: Annotated[
         list[str] | None, typer.Option("--method", help="Methods (repeatable; default: all).")
     ] = None,
+    datasets: Annotated[
+        list[str] | None,
+        typer.Option("--dataset", help="Datasets (repeatable; default: configs/experiment.json)."),
+    ] = None,
 ) -> None:
     """
-    Run methods on every dataset of configs/experiment.json, each in its own process.
+    Run methods on every dataset, each in its own memory-guarded process, resuming.
 
     \f
     Parameters
     ----------
     methods : list of str or None
         Keys of ``METHODS``; None means all, in registry order.
+    datasets : list of str or None
+        Datasets; None means the ``datasets`` of ``configs/experiment.json``.
 
     Returns
     -------
@@ -836,21 +894,34 @@ def run_all(
     Raises
     ------
     RuntimeError
-        If any run failed; the others still run.
+        If any run failed or was stopped; the others still run.
 
     Notes
     -----
     Processing:
-    1. For every dataset and method, run ``run`` in a fresh process, so caches
-       and memory do not build up across runs.
-    2. Report the failed runs at the end.
+    1. Skip the methods ``configs/experiment.json`` excludes for a dataset,
+       logging why.
+    2. Run ``run --resume`` for every other dataset and method in a fresh
+       process, so caches and memory do not build up across runs and finished
+       seeds are kept; stop it if free memory falls below
+       ``min_free_memory_mb``.
+    3. Report the failed and stopped runs at the end.
     """
+    experiment = load_experiment()
     failed = []
-    for dataset in load_experiment()["datasets"]:
+    for dataset in datasets or experiment["datasets"]:
+        excluded = experiment.get("excluded", {}).get(dataset, {})
         for method in methods or METHODS:
-            command = [sys.executable, "-m", "dedup_bench.experiment", "run", dataset, method]
-            if subprocess.run(command, cwd=PROJ_ROOT, check=False).returncode:
-                failed.append(f"{dataset} {method}")
+            if method in excluded:
+                logger.warning(f"{dataset} {method} excluded: {excluded[method]}")
+                continue
+            command = [sys.executable, "-m", "dedup_bench.experiment", "run"]
+            problem = run_guarded(
+                [*command, dataset, method, "--resume"], experiment["min_free_memory_mb"]
+            )
+            if problem:
+                logger.error(f"{dataset} {method}: {problem}")
+                failed.append(f"{dataset} {method} ({problem})")
     if failed:
         raise RuntimeError(f"{len(failed)} run(s) failed: {failed}")
     logger.success("every run finished")
