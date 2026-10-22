@@ -1,0 +1,772 @@
+{
+  "dataset": "skroutz",
+  "method": "probabilistic.splink",
+  "seed": 4,
+  "fixed": {},
+  "top_k": 10,
+  "objective": "b_cubed_f1",
+  "strategy": "optuna",
+  "best_params": {
+    "jaro_winkler_thresholds": [
+      0.9,
+      0.7
+    ],
+    "levenshtein_thresholds": [
+      1,
+      2
+    ],
+    "u_max_pairs": 1000000,
+    "max_iterations": 25,
+    "em_convergence": 0.0001,
+    "match_weight_threshold": 1.0
+  },
+  "validation_score": 0.49289687977838903,
+  "test": {
+    "pairwise_precision": 0.9217503772364734,
+    "pairwise_recall": 0.04999707687810582,
+    "pairwise_f1": 0.09484938556408322,
+    "b_cubed_precision": 0.9868677110896441,
+    "b_cubed_recall": 0.3313576742643428,
+    "b_cubed_f1": 0.4961309244783325,
+    "cluster_precision": 0.15271165390188368,
+    "cluster_recall": 0.45769678169833267,
+    "cluster_f1": 0.2290126690336224,
+    "ari": 0.09482830591801343,
+    "n_clusters": 38648,
+    "n_entities": 12895
+  },
+  "seconds_total": 23.797311100002844,
+  "seconds_test": 1.2600001000100747,
+  "peak_mb": 1186,
+  "trials": [
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 1.0
+      },
+      "score": 0.49289687977838903,
+      "seconds": 2.711728200010839
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 18.5
+      },
+      "score": 0.42269883824843607,
+      "seconds": 0.5244626999920001
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 12.0
+      },
+      "score": 0.42269883824843607,
+      "seconds": 0.5031878000008874
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 8.0
+      },
+      "score": 0.42269883824843607,
+      "seconds": 0.5067194999865023
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -5.5
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.494400499999756
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -5.5
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.4854244999878574
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -8.5
+      },
+      "score": 0.4625682942260847,
+      "seconds": 0.4968904000124894
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 16.0
+      },
+      "score": 0.42269883824843607,
+      "seconds": 0.4601590000092983
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 8.0
+      },
+      "score": 0.42269883824843607,
+      "seconds": 0.45631750000757165
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 11.5
+      },
+      "score": 0.42269883824843607,
+      "seconds": 0.49229679998825304
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 2.5
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.5349783999990905
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -1.5
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.5567580000060843
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -1.5
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.5198009000014281
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 2.0
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.49827619999996386
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -9.0
+      },
+      "score": 0.4625682942260847,
+      "seconds": 0.5056464000081178
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -3.0
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.5037746999878436
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 2.5
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.49650709998968523
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -6.0
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.4781109000032302
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 5.0
+      },
+      "score": 0.42269883824843607,
+      "seconds": 0.4594980999972904
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -3.0
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.5004923000087729
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -10.0
+      },
+      "score": 0.4625682942260847,
+      "seconds": 0.5112951999908546
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -5.5
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.4962974999943981
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -5.5
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.4843740000069374
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -0.5
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.5062067999970168
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -6.0
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.5045195999991847
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 0.5
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.515687799997977
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 5.0
+      },
+      "score": 0.42269883824843607,
+      "seconds": 0.5036366999993334
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -3.5
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.5286417000024812
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -7.5
+      },
+      "score": 0.4625682942260847,
+      "seconds": 0.5062456000014208
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -3.5
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.5026983999996446
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 5.0
+      },
+      "score": 0.42269883824843607,
+      "seconds": 0.46753440001339186
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 2.0
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.4809936000092421
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 3.5
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.4773544000054244
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 8.0
+      },
+      "score": 0.42269883824843607,
+      "seconds": 0.45472689998860005
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 0.5
+      },
+      "score": 0.49289687977838903,
+      "seconds": 0.47457310000027064
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": -7.5
+      },
+      "score": 0.4625682942260847,
+      "seconds": 0.491625099995872
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 7.0
+      },
+      "score": 0.42269883824843607,
+      "seconds": 0.46090360000380315
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 20.0
+      },
+      "score": 0.42269883824843607,
+      "seconds": 0.4671940000116592
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 12.0
+      },
+      "score": 0.42269883824843607,
+      "seconds": 0.457595499989111
+    },
+    {
+      "params": {
+        "jaro_winkler_thresholds": [
+          0.9,
+          0.7
+        ],
+        "levenshtein_thresholds": [
+          1,
+          2
+        ],
+        "u_max_pairs": 1000000,
+        "max_iterations": 25,
+        "em_convergence": 0.0001,
+        "match_weight_threshold": 15.0
+      },
+      "score": 0.42269883824843607,
+      "seconds": 0.47478550000232644
+    }
+  ],
+  "git_commit": "c89d027d06a50da8b279638bb272fd426dff843b",
+  "git_dirty": false,
+  "config_sha256": {
+    "datasets.json": "029270abd6d06f99157380f8569c762d89c1826cfcf0b0f80590d5c9939cb326",
+    "datasets_smoke.json": "6b8692a91f62f450dc082d80aa9ed1bfaebcc108738028125e0fb6248dd7eee5",
+    "experiment.json": "52933e673e9f3dcd85833906aa482d2a0c55a2650fa4e4b446141a158b2f4d16",
+    "models.json": "216c9d7fe3f9fd6e50ebc7b5e98e04e5a99a3da0afa5046829a79d5796f49bb1",
+    "tuning.json": "050715af58d6de84e9ae42ac63cb2b385f3954b374bfa3b9acf0adb2056450c5"
+  }
+}

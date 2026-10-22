@@ -1,0 +1,485 @@
+{
+  "dataset": "skroutz",
+  "method": "supervised.hist_gradient_boosting",
+  "seed": 2,
+  "fixed": {},
+  "top_k": 10,
+  "objective": "b_cubed_f1",
+  "strategy": "optuna",
+  "best_params": {
+    "learning_rate": 0.1,
+    "max_iter": 300,
+    "max_leaf_nodes": 63,
+    "class_weight": "balanced",
+    "threshold": 0.7
+  },
+  "validation_score": 0.7928910152128144,
+  "test": {
+    "pairwise_precision": 0.30089712507436184,
+    "pairwise_recall": 0.7773530115922553,
+    "pairwise_f1": 0.4338571884240381,
+    "b_cubed_precision": 0.7804351946897116,
+    "b_cubed_recall": 0.7900433094117325,
+    "b_cubed_f1": 0.785209861050377,
+    "cluster_precision": 0.43200637919401336,
+    "cluster_recall": 0.5482640510664798,
+    "cluster_f1": 0.48324127757384466,
+    "ari": 0.4336707807786854,
+    "n_clusters": 16303,
+    "n_entities": 12846
+  },
+  "seconds_total": 305.1147151000041,
+  "seconds_test": 11.45820160000585,
+  "peak_mb": 1359,
+  "trials": [
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.5293092050083243,
+      "seconds": 16.500612000003457
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.784335900530285,
+      "seconds": 11.692977300001075
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 100,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.5
+      },
+      "score": 0.7088834499506201,
+      "seconds": 5.0916028000065126
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 100,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.4
+      },
+      "score": 0.6282521229463532,
+      "seconds": 3.6755234000011114
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.2
+      },
+      "score": 0.38224544073936,
+      "seconds": 9.856512700003805
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7916652992939437,
+      "seconds": 15.494910599998548
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 300,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.5
+      },
+      "score": 0.7042802415786901,
+      "seconds": 4.609182100000908
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.5
+      },
+      "score": 0.7056877647639186,
+      "seconds": 11.717455300007714
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 400,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.785054126569694,
+      "seconds": 3.5293035000067903
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 100,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.4
+      },
+      "score": 0.6306631221080696,
+      "seconds": 4.595167499996023
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 200,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7858738877711869,
+      "seconds": 8.471367400008603
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 400,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.7650177354204957,
+      "seconds": 14.093755699999747
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7913128863292024,
+      "seconds": 16.472280100002536
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.7646264960979968,
+      "seconds": 0.6305323999986285
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 500,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.7630188815726301,
+      "seconds": 3.623135000001639
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7914696293945741,
+      "seconds": 0.6278179000073578
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.7657239695761675,
+      "seconds": 0.6222788000013679
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 200,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7858389101276688,
+      "seconds": 7.5111026000085985
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 200,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.7651863431269343,
+      "seconds": 7.451971400005277
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.786627954439644,
+      "seconds": 0.6080367999966256
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 300,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.78525883050447,
+      "seconds": 10.986124999995809
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7908205503282993,
+      "seconds": 15.475203499998315
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 400,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7907522296133344,
+      "seconds": 12.193567900001653
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 400,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.7644252339830531,
+      "seconds": 12.666743900001165
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7853427890453513,
+      "seconds": 9.022799400001531
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 500,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7922639557791478,
+      "seconds": 14.42463150000549
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 500,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7923311861219414,
+      "seconds": 15.091952700007823
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 500,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7923311861219414,
+      "seconds": 0.5955510000057984
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 500,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.7654011174483261,
+      "seconds": 0.6096122000017203
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 500,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.765364315074429,
+      "seconds": 14.379861400011578
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7915481402265052,
+      "seconds": 12.19681419999688
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 500,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7923311861219414,
+      "seconds": 0.5991671000083443
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 500,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7922639557791478,
+      "seconds": 0.5978881000046385
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.7647785382353941,
+      "seconds": 11.74577579999459
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7924406967860057,
+      "seconds": 0.6102703999931691
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7924406967860057,
+      "seconds": 0.6087452000065241
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7924406967860057,
+      "seconds": 0.5988826999964658
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7866751720776762,
+      "seconds": 0.6252051000046777
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 300,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7898930938632848,
+      "seconds": 3.544367399998009
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7928910152128144,
+      "seconds": 9.819439799990505
+    }
+  ],
+  "git_commit": "c89d027d06a50da8b279638bb272fd426dff843b",
+  "git_dirty": false,
+  "config_sha256": {
+    "datasets.json": "029270abd6d06f99157380f8569c762d89c1826cfcf0b0f80590d5c9939cb326",
+    "datasets_smoke.json": "6b8692a91f62f450dc082d80aa9ed1bfaebcc108738028125e0fb6248dd7eee5",
+    "experiment.json": "52933e673e9f3dcd85833906aa482d2a0c55a2650fa4e4b446141a158b2f4d16",
+    "models.json": "216c9d7fe3f9fd6e50ebc7b5e98e04e5a99a3da0afa5046829a79d5796f49bb1",
+    "tuning.json": "050715af58d6de84e9ae42ac63cb2b385f3954b374bfa3b9acf0adb2056450c5"
+  }
+}

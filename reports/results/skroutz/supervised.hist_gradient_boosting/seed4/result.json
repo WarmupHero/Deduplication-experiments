@@ -1,0 +1,331 @@
+{
+  "dataset": "skroutz",
+  "method": "supervised.hist_gradient_boosting",
+  "seed": 4,
+  "fixed": {},
+  "top_k": 10,
+  "objective": "b_cubed_f1",
+  "strategy": "optuna",
+  "best_params": {
+    "learning_rate": 0.03,
+    "max_iter": 400,
+    "max_leaf_nodes": 47,
+    "class_weight": "balanced",
+    "threshold": 0.7
+  },
+  "validation_score": 0.7951202483681844,
+  "test": {
+    "pairwise_precision": 0.32554839853921624,
+    "pairwise_recall": 0.7869433888726494,
+    "pairwise_f1": 0.46056638419690005,
+    "b_cubed_precision": 0.7926447387679554,
+    "b_cubed_recall": 0.7915310643420682,
+    "b_cubed_f1": 0.7920875100988601,
+    "cluster_precision": 0.4314856414303928,
+    "cluster_recall": 0.551143854207057,
+    "cluster_f1": 0.48402914935639857,
+    "ari": 0.4603936155606928,
+    "n_clusters": 16471,
+    "n_entities": 12895
+  },
+  "seconds_total": 26638.1004923,
+  "seconds_test": 16.270113200007472,
+  "peak_mb": 1764,
+  "trials": [
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.5338943401204529,
+      "seconds": 14.562111799998092
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7791918508212691,
+      "seconds": 9.212293199991109
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 100,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.5
+      },
+      "score": 0.709581039955004,
+      "seconds": 4.400825299991993
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 100,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.4
+      },
+      "score": 0.6274910109136387,
+      "seconds": 2.8560902000026545
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.2
+      },
+      "score": 0.3760592818279346,
+      "seconds": 8.665050099996733
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7946436537586706,
+      "seconds": 13.649818599995342
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 300,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.5
+      },
+      "score": 0.7060661134307932,
+      "seconds": 2.9704402000061236
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.5
+      },
+      "score": 0.7083417079866976,
+      "seconds": 9.823401399989962
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 400,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7812253356807538,
+      "seconds": 2.9350268999987748
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 100,
+        "max_leaf_nodes": 15,
+        "class_weight": "balanced",
+        "threshold": 0.4
+      },
+      "score": 0.6268191144279772,
+      "seconds": 3.9211818000039784
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 200,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7818609224445697,
+      "seconds": 7.340627700003097
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 400,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.768410065136327,
+      "seconds": 11.547885300009511
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.794958587993289,
+      "seconds": 13.136225399997784
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.7678591593391474,
+      "seconds": 0.584754299998167
+    },
+    {
+      "params": {
+        "learning_rate": 0.3,
+        "max_iter": 500,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.7651103057746644,
+      "seconds": 2.8842212000017753
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 300,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7941918575150967,
+      "seconds": 0.593771600004402
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7811102605374428,
+      "seconds": 0.5815578999900026
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 400,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.4
+      },
+      "score": 0.6267051682121733,
+      "seconds": 11.188108299989835
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7946436537586706,
+      "seconds": 0.585269100003643
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.7668585816535185,
+      "seconds": 12.626292699991609
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 400,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7810921131503015,
+      "seconds": 0.5870015999971656
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.5
+      },
+      "score": 0.7101396297162693,
+      "seconds": 0.5890414000023156
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 500,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7946436537586706,
+      "seconds": 0.5929460999905132
+    },
+    {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 400,
+        "max_leaf_nodes": 63,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7946155807247702,
+      "seconds": 12.71286240000336
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 400,
+        "max_leaf_nodes": 47,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7951202483681844,
+      "seconds": 0.7133621999964816
+    },
+    {
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 300,
+        "max_leaf_nodes": 31,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7794916066198915,
+      "seconds": 26472.231746300007
+    }
+  ],
+  "git_commit": "c89d027d06a50da8b279638bb272fd426dff843b",
+  "git_dirty": false,
+  "config_sha256": {
+    "datasets.json": "029270abd6d06f99157380f8569c762d89c1826cfcf0b0f80590d5c9939cb326",
+    "datasets_smoke.json": "6b8692a91f62f450dc082d80aa9ed1bfaebcc108738028125e0fb6248dd7eee5",
+    "experiment.json": "52933e673e9f3dcd85833906aa482d2a0c55a2650fa4e4b446141a158b2f4d16",
+    "models.json": "216c9d7fe3f9fd6e50ebc7b5e98e04e5a99a3da0afa5046829a79d5796f49bb1",
+    "tuning.json": "050715af58d6de84e9ae42ac63cb2b385f3954b374bfa3b9acf0adb2056450c5"
+  }
+}

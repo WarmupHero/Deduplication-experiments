@@ -1,0 +1,321 @@
+{
+  "dataset": "skroutz",
+  "method": "graph_clustering.merge_center",
+  "seed": 0,
+  "fixed": {},
+  "top_k": 10,
+  "objective": "b_cubed_f1",
+  "strategy": "optuna",
+  "best_params": {
+    "threshold": 0.75
+  },
+  "validation_score": 0.7018591986377023,
+  "test": {
+    "pairwise_precision": 0.06502325359571905,
+    "pairwise_recall": 0.711986455060993,
+    "pairwise_f1": 0.11916369977971976,
+    "b_cubed_precision": 0.6773377685076218,
+    "b_cubed_recall": 0.730098682033394,
+    "b_cubed_f1": 0.7027292946530709,
+    "cluster_precision": 0.3416113010385087,
+    "cluster_recall": 0.40867350875839187,
+    "cluster_f1": 0.37214531656243416,
+    "ari": 0.11881496951399866,
+    "n_clusters": 15503,
+    "n_entities": 12959
+  },
+  "seconds_total": 21.741804100005538,
+  "seconds_test": 0.15955399999802466,
+  "peak_mb": 472,
+  "trials": [
+    {
+      "params": {
+        "threshold": 0.55
+      },
+      "score": 0.3283768765954083,
+      "seconds": 0.6100124000076903
+    },
+    {
+      "params": {
+        "threshold": 0.95
+      },
+      "score": 0.5222682353134976,
+      "seconds": 0.47677150000527035
+    },
+    {
+      "params": {
+        "threshold": 0.8
+      },
+      "score": 0.6996701203692391,
+      "seconds": 0.4809702000056859
+    },
+    {
+      "params": {
+        "threshold": 0.7
+      },
+      "score": 0.6571427951500914,
+      "seconds": 0.5222399000049336
+    },
+    {
+      "params": {
+        "threshold": 0.4
+      },
+      "score": 0.11129367668638095,
+      "seconds": 0.67443290000665
+    },
+    {
+      "params": {
+        "threshold": 0.4
+      },
+      "score": 0.11129367668638095,
+      "seconds": 0.680851299999631
+    },
+    {
+      "params": {
+        "threshold": 0.3
+      },
+      "score": 0.06852633351787804,
+      "seconds": 0.7076816000044346
+    },
+    {
+      "params": {
+        "threshold": 0.9
+      },
+      "score": 0.5699936506208154,
+      "seconds": 0.469550399997388
+    },
+    {
+      "params": {
+        "threshold": 0.7
+      },
+      "score": 0.6571427951500914,
+      "seconds": 0.5175008999940474
+    },
+    {
+      "params": {
+        "threshold": 0.75
+      },
+      "score": 0.7018591986377023,
+      "seconds": 0.48963770001137163
+    },
+    {
+      "params": {
+        "threshold": 0.6
+      },
+      "score": 0.4445843676600075,
+      "seconds": 0.5799853000062285
+    },
+    {
+      "params": {
+        "threshold": 0.8
+      },
+      "score": 0.6996701203692391,
+      "seconds": 0.47539510000206064
+    },
+    {
+      "params": {
+        "threshold": 0.85
+      },
+      "score": 0.647147743391496,
+      "seconds": 0.4708412000036333
+    },
+    {
+      "params": {
+        "threshold": 0.75
+      },
+      "score": 0.7018591986377023,
+      "seconds": 0.4880819999962114
+    },
+    {
+      "params": {
+        "threshold": 0.7
+      },
+      "score": 0.6571427951500914,
+      "seconds": 0.516454500000691
+    },
+    {
+      "params": {
+        "threshold": 0.65
+      },
+      "score": 0.5613373464183978,
+      "seconds": 0.5530212000012398
+    },
+    {
+      "params": {
+        "threshold": 0.55
+      },
+      "score": 0.3283768765954083,
+      "seconds": 0.6134286000014981
+    },
+    {
+      "params": {
+        "threshold": 0.8
+      },
+      "score": 0.6996701203692391,
+      "seconds": 0.48349909999524243
+    },
+    {
+      "params": {
+        "threshold": 0.95
+      },
+      "score": 0.5222682353134976,
+      "seconds": 0.48905820000800304
+    },
+    {
+      "params": {
+        "threshold": 0.75
+      },
+      "score": 0.7018591986377023,
+      "seconds": 0.48539099999470636
+    },
+    {
+      "params": {
+        "threshold": 0.55
+      },
+      "score": 0.3283768765954083,
+      "seconds": 0.6071110000048066
+    },
+    {
+      "params": {
+        "threshold": 0.75
+      },
+      "score": 0.7018591986377023,
+      "seconds": 0.48603699999512173
+    },
+    {
+      "params": {
+        "threshold": 0.85
+      },
+      "score": 0.647147743391496,
+      "seconds": 0.4787047999998322
+    },
+    {
+      "params": {
+        "threshold": 0.65
+      },
+      "score": 0.5613373464183978,
+      "seconds": 0.5493645000096876
+    },
+    {
+      "params": {
+        "threshold": 0.75
+      },
+      "score": 0.7018591986377023,
+      "seconds": 0.4880051999934949
+    },
+    {
+      "params": {
+        "threshold": 0.75
+      },
+      "score": 0.7018591986377023,
+      "seconds": 0.4850581000064267
+    },
+    {
+      "params": {
+        "threshold": 0.85
+      },
+      "score": 0.647147743391496,
+      "seconds": 0.4728084999951534
+    },
+    {
+      "params": {
+        "threshold": 0.65
+      },
+      "score": 0.5613373464183978,
+      "seconds": 0.5543757999985246
+    },
+    {
+      "params": {
+        "threshold": 0.9
+      },
+      "score": 0.5699936506208154,
+      "seconds": 0.5090233000082662
+    },
+    {
+      "params": {
+        "threshold": 0.45
+      },
+      "score": 0.1612629761835172,
+      "seconds": 0.6596431000070879
+    },
+    {
+      "params": {
+        "threshold": 0.6
+      },
+      "score": 0.4445843676600075,
+      "seconds": 0.5914588000014191
+    },
+    {
+      "params": {
+        "threshold": 0.75
+      },
+      "score": 0.7018591986377023,
+      "seconds": 0.4875901000050362
+    },
+    {
+      "params": {
+        "threshold": 0.75
+      },
+      "score": 0.7018591986377023,
+      "seconds": 0.49012000000220723
+    },
+    {
+      "params": {
+        "threshold": 0.8
+      },
+      "score": 0.6996701203692391,
+      "seconds": 0.5167914000048768
+    },
+    {
+      "params": {
+        "threshold": 0.7
+      },
+      "score": 0.6571427951500914,
+      "seconds": 0.5905171999911545
+    },
+    {
+      "params": {
+        "threshold": 0.9
+      },
+      "score": 0.5699936506208154,
+      "seconds": 0.4470675999909872
+    },
+    {
+      "params": {
+        "threshold": 0.8
+      },
+      "score": 0.6996701203692391,
+      "seconds": 0.45459069999924395
+    },
+    {
+      "params": {
+        "threshold": 0.75
+      },
+      "score": 0.7018591986377023,
+      "seconds": 0.4300632000085898
+    },
+    {
+      "params": {
+        "threshold": 0.6
+      },
+      "score": 0.4445843676600075,
+      "seconds": 0.517660600002273
+    },
+    {
+      "params": {
+        "threshold": 0.7
+      },
+      "score": 0.6571427951500914,
+      "seconds": 0.5003499000013107
+    }
+  ],
+  "git_commit": "5072c61c3e0f133921894baf8a13e2aabd6d6e3a",
+  "git_dirty": false,
+  "config_sha256": {
+    "datasets.json": "fbc14a38db0a8ee5daab797628683483808207c34fdf245d6b1b0b454857c868",
+    "datasets_smoke.json": "6b8692a91f62f450dc082d80aa9ed1bfaebcc108738028125e0fb6248dd7eee5",
+    "experiment.json": "c8c1926eed76de096ba708a9798ca261bf514a680d7b32ac221692b006c50856",
+    "models.json": "216c9d7fe3f9fd6e50ebc7b5e98e04e5a99a3da0afa5046829a79d5796f49bb1",
+    "tuning.json": "050715af58d6de84e9ae42ac63cb2b385f3954b374bfa3b9acf0adb2056450c5"
+  }
+}

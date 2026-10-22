@@ -1,0 +1,569 @@
+{
+  "dataset": "skroutz",
+  "method": "active_learning.random_forest",
+  "seed": 4,
+  "fixed": {
+    "label_budget": 100
+  },
+  "top_k": 10,
+  "objective": "b_cubed_f1",
+  "strategy": "optuna",
+  "best_params": {
+    "label_budget": 100,
+    "initial_labels": 10,
+    "query_batch_size": 1,
+    "n_estimators": 100,
+    "max_depth": null,
+    "class_weight": "balanced",
+    "threshold": 0.75
+  },
+  "validation_score": 0.7547116465134895,
+  "test": {
+    "pairwise_precision": 0.21369122893003534,
+    "pairwise_recall": 0.7205027769657995,
+    "pairwise_f1": 0.32962130539401546,
+    "b_cubed_precision": 0.7734374538034972,
+    "b_cubed_recall": 0.7244968874273077,
+    "b_cubed_f1": 0.7481676766151332,
+    "cluster_precision": 0.3498496035001367,
+    "cluster_recall": 0.49608375339278793,
+    "cluster_f1": 0.41032713277742144,
+    "ari": 0.3293871999197432,
+    "n_clusters": 18285,
+    "n_entities": 12895
+  },
+  "seconds_total": 62.8187692000065,
+  "seconds_test": 1.6385985999950208,
+  "peak_mb": 1088,
+  "trials": [
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": 10,
+        "class_weight": "balanced",
+        "threshold": 0.65
+      },
+      "score": 0.5197382060606525,
+      "seconds": 1.8746261999913258
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.7260148656425802,
+      "seconds": 1.850772899997537
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": 10,
+        "class_weight": "balanced",
+        "threshold": 0.55
+      },
+      "score": 0.5019978823340343,
+      "seconds": 1.5076783999975305
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7520767333076034,
+      "seconds": 1.5584579999995185
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.7260148656425802,
+      "seconds": 1.5252532000013161
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": 10,
+        "class_weight": "balanced",
+        "threshold": 0.5
+      },
+      "score": 0.4952688931382637,
+      "seconds": 1.5250703000056092
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.55
+      },
+      "score": 0.7481862544383437,
+      "seconds": 1.4568778000102611
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": 10,
+        "class_weight": "balanced",
+        "threshold": 0.4
+      },
+      "score": 0.4844547390750025,
+      "seconds": 1.4687722999951802
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": 10,
+        "class_weight": "balanced",
+        "threshold": 0.3
+      },
+      "score": 0.46902969812823325,
+      "seconds": 1.4978890000056708
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": 10,
+        "class_weight": "balanced",
+        "threshold": 0.2
+      },
+      "score": 0.4274507724282838,
+      "seconds": 1.5373813000041991
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7520767333076034,
+      "seconds": 1.5364489999919897
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7520767333076034,
+      "seconds": 1.5202241000079084
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7520767333076034,
+      "seconds": 1.5065065999951912
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7533276575727125,
+      "seconds": 1.4681547000072896
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.65
+      },
+      "score": 0.751662535758143,
+      "seconds": 1.4479938999866135
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.65
+      },
+      "score": 0.751662535758143,
+      "seconds": 1.4878369000070961
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": 10,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.6321452260013735,
+      "seconds": 1.5341852999990806
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7533276575727125,
+      "seconds": 1.5413996999996016
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7533276575727125,
+      "seconds": 1.5133478999923682
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.5
+      },
+      "score": 0.7457773048461385,
+      "seconds": 1.5088648999953875
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7533276575727125,
+      "seconds": 1.4615778000006685
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7533276575727125,
+      "seconds": 1.4499962999980198
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.7500458251431987,
+      "seconds": 1.465823199992883
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.7533276575727125,
+      "seconds": 1.561363300002995
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.75
+      },
+      "score": 0.7547116465134895,
+      "seconds": 1.5434749999985797
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": 10,
+        "class_weight": "balanced",
+        "threshold": 0.75
+      },
+      "score": 0.6055784603509481,
+      "seconds": 1.5332385999936378
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.75
+      },
+      "score": 0.7547116465134895,
+      "seconds": 1.4863410999969346
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.75
+      },
+      "score": 0.7547116465134895,
+      "seconds": 1.4553767000033986
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.75
+      },
+      "score": 0.7547116465134895,
+      "seconds": 1.4452187999995658
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.7500458251431987,
+      "seconds": 1.4816759999957867
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": 10,
+        "class_weight": "balanced",
+        "threshold": 0.65
+      },
+      "score": 0.5197382060606525,
+      "seconds": 1.5362011999968672
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.75
+      },
+      "score": 0.7547116465134895,
+      "seconds": 1.5221716999949422
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.75
+      },
+      "score": 0.7547116465134895,
+      "seconds": 1.5350324000028195
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": 10,
+        "class_weight": "balanced",
+        "threshold": 0.7
+      },
+      "score": 0.5352063639377144,
+      "seconds": 1.4613106999895535
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.75
+      },
+      "score": 0.7547116465134895,
+      "seconds": 1.4600370999978622
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.75
+      },
+      "score": 0.7547116465134895,
+      "seconds": 1.4628591000073357
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.2
+      },
+      "score": 0.24502510061525884,
+      "seconds": 1.5079819999955362
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.6
+      },
+      "score": 0.7500458251431987,
+      "seconds": 1.5240823999920394
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.8
+      },
+      "score": 0.7520767333076034,
+      "seconds": 1.5321647999953711
+    },
+    {
+      "params": {
+        "label_budget": 100,
+        "initial_labels": 10,
+        "query_batch_size": 1,
+        "n_estimators": 100,
+        "max_depth": null,
+        "class_weight": "balanced",
+        "threshold": 0.75
+      },
+      "score": 0.7547116465134895,
+      "seconds": 1.517618499987293
+    }
+  ],
+  "git_commit": "c89d027d06a50da8b279638bb272fd426dff843b",
+  "git_dirty": false,
+  "config_sha256": {
+    "datasets.json": "029270abd6d06f99157380f8569c762d89c1826cfcf0b0f80590d5c9939cb326",
+    "datasets_smoke.json": "6b8692a91f62f450dc082d80aa9ed1bfaebcc108738028125e0fb6248dd7eee5",
+    "experiment.json": "52933e673e9f3dcd85833906aa482d2a0c55a2650fa4e4b446141a158b2f4d16",
+    "models.json": "216c9d7fe3f9fd6e50ebc7b5e98e04e5a99a3da0afa5046829a79d5796f49bb1",
+    "tuning.json": "050715af58d6de84e9ae42ac63cb2b385f3954b374bfa3b9acf0adb2056450c5"
+  }
+}
